@@ -1,0 +1,617 @@
+[
+  {
+    "abbr": "Pre-training",
+    "ipa": "/ˌpriː ˈtreɪnɪŋ/",
+    "detail": "预训练就像让一个学生在上岗前先读完整个图书馆：模型在海量无标注文本上反复做“填空”或“猜下一个 Token”的练习，自学出语言规律、世界知识和推理能力的底子。它处于大模型生产线的第一道工序：先预训练得到基座模型，之后才有 Post-training（SFT、RLHF 等对齐训练）、评估和部署。没有预训练，模型就像没读过书的新生，什么都不懂；后续任何微调都只是在这个知识地基上搞装修。它的代价极高，动辄数千张 GPU 训练数月，遵循 Scaling Law：数据、参数、算力越大，能力越强，还可能在某个规模突然涌现出 Emergent Ability。对使用者而言，预训练决定了模型的知识上限和通用能力天花板，后续环节很难再超越它。",
+    "related": [
+      "Post-training",
+      "Token",
+      "Scaling Law",
+      "Emergent Ability",
+      "LLM",
+      "GPU",
+      "Continual Pre-training"
+    ]
+  },
+  {
+    "abbr": "Post-training",
+    "ipa": "/ˌpəʊst ˈtreɪnɪŋ/",
+    "detail": "后训练好比新员工入职培训：预训练出来的基座模型虽然博览群书，却只会“接话茬”式地续写文本，不会好好回答问题、不懂分寸。后训练就是教它听懂指令、答得得体、守住安全底线。它位于预训练之后、部署之前，包含 SFT（用人工写的问答教它对话格式）、RLHF 或 DPO（按人类偏好对齐价值观）等环节。它解决的核心问题是“有知识不等于会用知识”：基座模型续写时可能跑题、编造甚至输出有害内容，后训练把它塑造成可用的助手；少了它，ChatGPT 就只是一个高级的自动补全器。近年还出现了 RLAIF（用 AI 代替人类标注）等降本路线。后训练成本远低于预训练，却直接决定模型的指令遵循、表达风格与安全表现，是把 LLM 从“模型”变成“产品”的关键一步。",
+    "related": [
+      "Pre-training",
+      "SFT",
+      "RLHF",
+      "DPO",
+      "Alignment",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "SFT",
+    "ipa": "/ˌes ef ˈtiː/",
+    "detail": "SFT（监督微调）就像老师拿着标准答案批改学生作业：给模型看成千上万条“指令—理想回答”配对样本，让它模仿着学该怎么答。训练时对每条样本计算 Loss（预测与标准答案的差距），用 Gradient Descent 反向更新参数。它是 Post-training 的第一道工序：Pre-training 得到的基座模型先经 SFT 学会对话格式与指令遵循，之后才进入 RLHF 或 DPO 做偏好对齐。它解决的痛点是：基座模型只会续写，你问它问题它可能反问你一句；SFT 把“续写器”改造成“答题助手”。相比 FFT（全参数微调），如今常用 LoRA 等 PEFT 方法做 SFT，成本大降。经验上数据质量远比数量关键，几千条精品样本往往胜过百万条噪声数据，差数据反而教坏模型。",
+    "related": [
+      "Post-training",
+      "Pre-training",
+      "Loss",
+      "Gradient Descent",
+      "RLHF",
+      "DPO",
+      "LoRA",
+      "FFT"
+    ]
+  },
+  {
+    "abbr": "Instruction Tuning",
+    "ipa": "/ɪnˈstrʌkʃn ˈtjuːnɪŋ/",
+    "detail": "指令微调类似让实习生反复演练各种工作任务：把“翻译这段话”“总结这篇文章”“写封邮件”等自然语言指令配上标准回答喂给模型训练，让它学会听指令办事。它本质上是 SFT 的一种特定形式，强调任务种类的多样性与指令格式，是 Post-training 阶段把基座模型变成通用助手的关键一步。在“预训练→指令微调→偏好对齐（RLHF/DPO）”的流水线中，它解决“模型有知识但不会按人类意图使用”的痛点：未经指令微调的模型面对提问常自顾自续写，微调后跨任务泛化能力大增，没见过的任务也能照指令完成，研究表明任务种类越多泛化越好。它直接支撑 Instruction Following 与 Zero-shot 能力，让模型在 Few-shot 提示之外也能开箱即用，是 Chatbot 体验的地基。",
+    "related": [
+      "SFT",
+      "Post-training",
+      "RLHF",
+      "DPO",
+      "Instruction Following",
+      "Zero-shot",
+      "Few-shot"
+    ]
+  },
+  {
+    "abbr": "LoRA",
+    "ipa": "/ˈlɔːrə/",
+    "detail": "LoRA（低秩适配）好比给西装加一条可调节的松紧带而不是重裁整件衣服：冻结预训练模型的全部原始权重，只在注意力等层旁边并联一对很小的低秩矩阵 A 和 B，训练时只更新这两个小矩阵，推理时再合并回原权重。它属于 PEFT（参数高效微调）家族，最常用于 SFT 环节：相比 FFT 全参数微调，它把可训练参数从几十亿压到几百万，显存需求骤降，一块消费级 GPU 就能微调大模型。它解决的痛点是：全参微调要保存完整的梯度和优化器状态，VRAM 开销数倍于权重本身，普通团队根本玩不起。LoRA 微调出的“小补丁”文件还能即插即换，一个基座挂多个 LoRA 适配不同风格或任务。它常与 Quantization 组合成 QLoRA 进一步省显存，效果接近全参而成本零头。",
+    "related": [
+      "PEFT",
+      "FFT",
+      "SFT",
+      "QLoRA",
+      "DoRA",
+      "Adapter",
+      "GPU",
+      "VRAM"
+    ]
+  },
+  {
+    "abbr": "QLoRA",
+    "ipa": "/ˌkjuː ˈlɔːrə/",
+    "detail": "QLoRA 就是“在压缩文件上打补丁”：先把预训练模型的权重量化到 4-bit（通常用 NF4 格式）并冻结，显存占用降到原来的几分之一，再在这个量化基座上挂 LoRA 低秩适配器，反向传播时借助双重量化、分页优化器等技术把计算临时拉回 BF16 精度。它处于“高效微调”技术栈中，是 LoRA 与 Quantization 的组合拳，典型用途是在单张消费级显卡上完成 SFT。它解决的痛点很现实：LoRA 虽已省掉绝大部分可训练参数，但基座模型本身仍要完整加载进 VRAM，65B 级别模型动辄上百 GB；QLoRA 把门槛降到一张 48GB 甚至更小的卡。论文实验显示其效果几乎追平 16-bit 全参微调。它让个人开发者也能微调 LLaMA、Qwen 等开源大模型，是开源社区的主流微调方案。",
+    "related": [
+      "LoRA",
+      "Quantization",
+      "PEFT",
+      "SFT",
+      "VRAM",
+      "LLaMA",
+      "Qwen"
+    ]
+  },
+  {
+    "abbr": "DoRA",
+    "ipa": "/ˈdɔːrə/",
+    "detail": "DoRA（权重分解低秩适配）可以理解为把“力气大小”和“发力方向”分开练：它先把预训练权重拆成幅度（向量的长度）和方向（单位向量）两部分，方向部分用 LoRA 式低秩矩阵微调，幅度单独学一个缩放系数，以此模仿全参微调 FFT 的更新模式。它属于 PEFT 家族，是 LoRA 的改进版，常用于 SFT 等微调环节。它要解决的痛点是：LoRA 虽省资源，但在部分任务上与全参微调仍有效果差距，因为 LoRA 让幅度和方向联动更新，学习动态与 FFT 不同；DoRA 把二者解耦后训练更稳定，最终精度更接近全参微调，而额外的训练和推理开销很小。对于“既想要 LoRA 的便宜、又想逼近 FFT 效果”的场景，DoRA 是值得尝试的升级选项，社区也常见 DoRA 与 QLoRA 式量化叠加使用。",
+    "related": [
+      "LoRA",
+      "FFT",
+      "PEFT",
+      "SFT",
+      "QLoRA"
+    ]
+  },
+  {
+    "abbr": "Adapter",
+    "ipa": "/əˈdæptə(r)/",
+    "detail": "Adapter（适配器）类似在流水线上加装一个个小型加工模块而不用拆改主设备：在 Transformer 各层（通常是注意力层和前馈网络之后）插入参数很少的瓶颈结构小模块，训练时冻结原模型、只更新这些插入件。它是 PEFT（参数高效微调）的鼻祖之一，早在 BERT 时代就流行：当时模型越来越大，每接一个下游任务就 FFT 全参微调一遍，既贵又难管理多个任务副本；Adapter 让每个任务只需保存几 MB 的小模块，基座共享、即插即用。它解决的痛点正是全参微调的存储与算力成本。后来 LoRA 因不改结构、推理零额外延迟而更流行，但 Adapter 的思想直接启发了 Prefix-Tuning、P-Tuning 等一整代“冻结主干、只练小件”的高效微调方法，至今在多任务系统中仍有一席之地。",
+    "related": [
+      "Transformer",
+      "PEFT",
+      "FFT",
+      "BERT",
+      "LoRA",
+      "Prefix-Tuning",
+      "P-Tuning"
+    ]
+  },
+  {
+    "abbr": "Prefix-Tuning",
+    "ipa": "/ˈpriːfɪks ˈtjuːnɪŋ/",
+    "detail": "Prefix-Tuning（前缀微调）好比在乐谱前面加一段“引子”来引导整支乐队，而不去改动任何乐手：冻结大模型的全部参数，只训练一串接在输入最前面的连续向量（可理解为一段虚拟 Token 前缀），让它引导模型生成想要的输出风格与内容。它属于 PEFT 家族，常用于生成任务的轻量定制。在“全参微调 vs 高效微调”的演进脉络里，它解决的痛点是：FFT 要为每个任务存一整套模型副本，开销巨大；Prefix-Tuning 每个任务只需保存极小的前缀参数，基座模型共享复用。它受人工 Prompt 启发，但前缀是连续向量而非离散文字，可微分、可用梯度优化，效果远超手写的提示词。后来的 P-Tuning 把同样思想推广到理解类任务，与 Adapter、LoRA 同属一条技术路线。",
+    "related": [
+      "PEFT",
+      "FFT",
+      "Token",
+      "Prompt",
+      "P-Tuning",
+      "Adapter",
+      "LoRA"
+    ]
+  },
+  {
+    "abbr": "P-Tuning",
+    "ipa": "/ˈpiː ˈtjuːnɪŋ/",
+    "detail": "P-Tuning 可以理解为给问题配一个“可学习的万能开场白”：人工写的 Prompt 是离散文字，表达力有限且效果靠运气；P-Tuning 把提示改成一组连续可训练的向量，再用一个小型编码器优化它们，模型本体全程冻结。它属于 PEFT 家族，与 Prefix-Tuning 同源，但重要贡献是让 GPT 这类生成式模型也能胜任 NLU（自然语言理解）任务，缩小了与 BERT 的差距，打破了“GPT 不擅长理解”的固有印象。它解决人工提示工程不稳定、离散 Prompt 搜索空间差的痛点：连续向量可直接梯度优化，效果更稳更强，且远超手工调提示。后续 P-Tuning v2 把提示向量加到每一层而非仅输入层，性能可比肩全参微调 FFT。它适合标注数据少、算力有限、又不想改动大模型的场景。",
+    "related": [
+      "Prefix-Tuning",
+      "Prompt",
+      "PEFT",
+      "GPT",
+      "BERT",
+      "FFT"
+    ]
+  },
+  {
+    "abbr": "PEFT",
+    "ipa": "/ˌpiː iː ef ˈtiː/",
+    "detail": "PEFT（参数高效微调）是一大类方法的总称，理念像“给房子换软装而不是推倒重建”：冻结预训练模型的绝大部分参数，只训练极少量的新增或被选中的参数。旗下方法包括 LoRA、QLoRA、DoRA、Adapter、Prefix-Tuning、P-Tuning 等。它处于“预训练→微调”链路中，是 FFT（全参数微调）的平价替代路线。它解决的痛点随模型规模爆炸而来：几十亿参数的模型全参微调需要数倍于权重的显存（梯度加优化器状态），还要为每个任务保存完整副本，成本离谱；PEFT 把可训练参数压到 1% 以下，消费级 GPU 也能玩转大模型微调，还因为不动主干权重而天然缓解 Catastrophic Forgetting。如今工业界做 SFT 时，LoRA 系 PEFT 几乎是默认选择，Hugging Face 的 peft 库把这些方法统一封装。",
+    "related": [
+      "FFT",
+      "LoRA",
+      "QLoRA",
+      "DoRA",
+      "Adapter",
+      "Prefix-Tuning",
+      "P-Tuning",
+      "Catastrophic Forgetting"
+    ]
+  },
+  {
+    "abbr": "FFT",
+    "ipa": "/ˌef ef ˈtiː/",
+    "detail": "FFT 在这里指全参数微调（Full Fine-Tuning，与信号处理的快速傅里叶变换同名不同义），好比把整栋楼重新装修而不是只换个房间：在预训练权重的基础上，用新任务数据更新模型的全部参数。它位于“预训练→微调”链路中，是最直接也最“重”的微调方式，常用于 SFT 或接在 Continual Pre-training 之后的领域适配。它曾是 BERT 级别小模型时代的标准做法，但模型涨到百亿千亿参数后痛点凸显：优化器状态加梯度让显存需求翻好几倍，全参微调动辄需要多卡集群，每个任务还要存一整份权重。它的效果上限通常最高，但用力过猛也容易引发 Catastrophic Forgetting。如今它与 LoRA 等 PEFT 方法权衡选用：追求极致效果且资源充足选 FFT，否则选 PEFT。",
+    "related": [
+      "PEFT",
+      "LoRA",
+      "SFT",
+      "Catastrophic Forgetting",
+      "BERT",
+      "Continual Pre-training"
+    ]
+  },
+  {
+    "abbr": "RL",
+    "ipa": "/ˌɑː ˈel/",
+    "detail": "强化学习（RL）类似训练宠物：不给标准答案，只按行为结果给奖励或惩罚，让智能体在与环境的反复互动中自己摸索出得分最高的策略。它由状态、动作、奖励三要素构成，与“有标准答案”的监督学习、“自学规律”的自监督学习并列为机器学习三大范式。在 AI 发展脉络中，RL 因 AlphaGo 名声大噪，如今更是大模型 Post-training 的关键引擎：RLHF 用人类偏好当奖励，RLAIF 用 AI 反馈当奖励，DeepSeek-R1 这类推理模型更用可验证答案（数学对错、代码过测试）做奖励，直接激发长链推理 CoT。常用算法有 PPO、GRPO。它解决监督学习“只能模仿已有答案、无法超越标注者水平，也难以优化‘答得好不好’这种模糊目标”的痛点，让模型朝“更优”而非“更像”进化。",
+    "related": [
+      "RLHF",
+      "RLAIF",
+      "PPO",
+      "GRPO",
+      "Reward Model",
+      "Post-training",
+      "CoT",
+      "DeepSeek"
+    ]
+  },
+  {
+    "abbr": "RLHF",
+    "ipa": "/ˌɑː el eɪtʃ ˈef/",
+    "detail": "RLHF（基于人类反馈的强化学习）好比让食客给厨师的每道菜打分、厨师照着口碑改良手艺：先收集人类对模型多个回答的优劣排序，训练一个 Reward Model 学会人类口味，再用 PPO 等 RL 算法让模型产出得分更高的回答。它处于 Post-training 阶段 SFT 之后，是把基座模型变成“懂分寸的助手”的关键一步，ChatGPT 的成功很大程度归功于它。它解决的痛点是：“回答是否得体、有用、无害”这类目标没有标准答案，SFT 的模仿有天花板；RLHF 把模糊的人类偏好变成可优化的奖励信号，直接服务于 Alignment（对齐），显著减少有害输出与答非所问。缺点是人类标注贵、流程复杂（要同时维护多个模型），于是有了用 AI 代替标注的 RLAIF、免强化学习的 DPO 等简化方案。",
+    "related": [
+      "RL",
+      "Reward Model",
+      "PPO",
+      "SFT",
+      "Post-training",
+      "Alignment",
+      "RLAIF",
+      "DPO"
+    ]
+  },
+  {
+    "abbr": "RLAIF",
+    "ipa": "/ˌɑː el eɪ aɪ ˈef/",
+    "detail": "RLAIF（基于 AI 反馈的强化学习）就是“请 AI 当老师代替人类批改作业”：RLHF 需要大量人工对回答两两排序，又贵又慢；RLAIF 让一个强模型按预设原则（如无害、诚实、有用）给候选回答打分排序，生成偏好数据，再走同样的强化学习流程（如 PPO）。它位于 Post-training 的对齐环节，是 RLHF 的低成本变体，Constitutional AI 是最有代表性的实践。它解决的痛点很实际：人类偏好标注难以规模化，质量还参差不齐，成了对齐的产能瓶颈；AI 反馈便宜、一致、可大批量生产，且原则可以明文公开、可审计。风险是 AI 裁判会带入自身偏见，可能强化而非纠正错误，所以实践中常与少量人类标注混用、相互校验。它与 RLHF 目标一致——Alignment，只是把“反馈来源”从人换成了 AI。",
+    "related": [
+      "RLHF",
+      "RL",
+      "PPO",
+      "Constitutional AI",
+      "Post-training",
+      "Alignment"
+    ]
+  },
+  {
+    "abbr": "PPO",
+    "ipa": "/ˌpiː piː ˈəʊ/",
+    "detail": "PPO（近端策略优化）可以理解为“学开车时每次只小幅修正方向盘”：策略梯度方法若一次更新太猛，模型表现会剧烈波动甚至崩溃；PPO 用裁剪机制限制新旧策略的差异，让每步更新都待在“信任域”附近，稳定又省样本。它是 RL 领域最流行的算法之一，在大模型时代成为 RLHF 的标配引擎：Post-training 阶段，SFT 之后的模型在 Reward Model 打出的分数引导下，用 PPO 逐步优化生成策略。它解决的痛点是早期策略梯度算法对超参数极敏感、训练易翻车；PPO 在实现简单与稳定性之间取得了很好的平衡。缺点是流程重——要同时维护策略、价值、奖励、参考四个模型，显存开销大、超参数多。DeepSeek 提出的 GRPO 去掉了价值网络，DPO 更干脆免掉 RL 环节，都是对它的简化。",
+    "related": [
+      "RL",
+      "RLHF",
+      "Reward Model",
+      "SFT",
+      "GRPO",
+      "DPO",
+      "DeepSeek"
+    ]
+  },
+  {
+    "abbr": "DPO",
+    "ipa": "/ˌdiː piː ˈəʊ/",
+    "detail": "DPO（直接偏好优化）像是跳过“评委打分”环节、直接对照“优选答案”临摹改进：RLHF 要先训 Reward Model 再跑 PPO，链路长、显存贵、训练还不稳；DPO 从数学上推导出，直接用“好回答 vs 差回答”的偏好对数据，就能以类似监督学习的方式完成对齐，奖励被隐式地表达出来。它处于 Post-training 的对齐环节，是 RLHF 的轻量替代：训练流程与 SFT 几乎一样简单，单卡即可跑，稳定性好。它解决的痛点是 RLHF 的工程复杂度——四个模型来回加载、超参数难调、容易训崩；DPO 开源后迅速流行，许多开源模型（如部分 Llama、Mistral 官方对齐版本）靠它完成偏好对齐。后续还有 KTO（只需二元好坏反馈）等进一步简化的变体。局限是它缺少在线探索，理论上限不及完整的 RL 流程。",
+    "related": [
+      "RLHF",
+      "Reward Model",
+      "PPO",
+      "SFT",
+      "Post-training",
+      "KTO"
+    ]
+  },
+  {
+    "abbr": "KTO",
+    "ipa": "/ˌkeɪ tiː ˈəʊ/",
+    "detail": "KTO（Kahneman-Tversky 优化）取材于诺奖级的前景理论：人类对“损失”比对“收益”更敏感，而且判断好坏往往不需要两两比较。它据此设计对齐算法——只要给每条样本标上“好”或“坏”的二元标签即可训练，不再需要严格的成对偏好数据。它处于 Post-training 的对齐环节，与 DPO 同属“免 Reward Model、免强化学习”的简化路线，但数据门槛更低。它解决的痛点是：收集严格配对的偏好数据很难——同一个 Prompt 要产出两个质量可比较的回答，成本高昂；而现实中“这条回复被点赞/点踩”这类一元反馈到处都是。KTO 直接利用这些现成信号，实验中达到甚至超过 DPO 的对齐效果。它特别适合偏好配对数据稀缺、但握有大量粗粒度用户反馈（点赞、采纳、重试）的产品团队，把线上行为直接变成对齐燃料。",
+    "related": [
+      "DPO",
+      "RLHF",
+      "Reward Model",
+      "Post-training",
+      "Alignment"
+    ]
+  },
+  {
+    "abbr": "GRPO",
+    "ipa": "/ˌdʒiː ɑː piː ˈəʊ/",
+    "detail": "GRPO（组相对策略优化）好比小组内部排名定奖惩：对同一个问题让模型生成一组回答，用组内平均奖励作基线，答得比组平均好就鼓励、比平均差就抑制，由此省掉了 PPO 里庞大又难训的价值网络（Critic）。它由 DeepSeek 提出，用于 DeepSeek-R1 等推理模型的训练，位于 Post-training 的强化学习环节，常与可验证奖励（数学题答案对错、代码能否通过测试）配合。它解决的痛点是 PPO 太贵：要同时加载策略、价值、奖励、参考四个模型，显存与工程复杂度都高；GRPO 砍掉价值网络后成本大降，且在大规模推理训练上效果出色，直接推动了“纯 RL 激发长链推理 CoT”的潮流。如今主流训练框架普遍支持 GRPO，它已成为开源社区训练推理模型的默认算法之一。",
+    "related": [
+      "PPO",
+      "RL",
+      "Reward Model",
+      "DeepSeek",
+      "CoT",
+      "Post-training",
+      "vLLM"
+    ]
+  },
+  {
+    "abbr": "Reward Model",
+    "ipa": "/rɪˈwɔːd ˈmɒdl/",
+    "detail": "奖励模型好比一位替人类“试吃打分”的评委：在 RLHF 中，人类不可能实时给模型的每个回答打分，于是先用人类标注的偏好对数据训练一个 Reward Model，让它学会人类的口味，对任意回答输出一个标量分数，供 PPO 等强化学习算法当作奖励信号。它处于 Post-training 对齐流水线的中间位置：上游是人类偏好标注，下游是 RL 优化。它解决的痛点是“人类反馈不可规模化”——把有限的人工标注蒸馏成可无限调用的打分器。但它有明显缺陷：被优化的模型会“讨好”评委（reward hacking），钻奖励模型的空子刷高分而非真正变好；评委本身也有偏见与盲区。为绕开这些问题，业界发展出 DPO、KTO 等免奖励模型的对齐方法，以及 GRPO 常用的规则可验证奖励（答案对错直接判定）。",
+    "related": [
+      "RLHF",
+      "RL",
+      "PPO",
+      "DPO",
+      "KTO",
+      "Post-training",
+      "GRPO"
+    ]
+  },
+  {
+    "abbr": "Distillation",
+    "ipa": "/ˌnɒlɪdʒ dɪstɪˈleɪʃn/",
+    "detail": "知识蒸馏好比名师带徒弟：不直接让徒弟去读万卷书，而是让徒弟模仿老师（大模型）的解题过程和答案，把老师的能力“浓缩”进学生（小模型）体内。常见做法是用大模型生成带推理过程的回答作为训练数据，对小模型做 SFT；更精细的做法还对齐师生输出的 Logits 概率分布。它处于模型“变小变快”的技术脉络中，与 Quantization、Pruning 并称三大压缩手段。它解决的痛点是：大模型虽强但推理贵、难部署；而直接训练小模型又学不到同等水平。蒸馏让小模型以极低训练成本获得远超自学的表现——DeepSeek-R1 蒸馏出的一系列小模型就是著名案例。要注意蒸馏的是“行为”而非全部知识：学生的天花板受老师限制，还可能连老师的偏见和错误一起继承，因此蒸馏后仍需严格评估。",
+    "related": [
+      "SFT",
+      "Quantization",
+      "Pruning",
+      "Logits",
+      "DeepSeek",
+      "Parameter",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Quantization",
+    "ipa": "/ˌkwɒntaɪˈzeɪʃn/",
+    "detail": "量化好比把高清照片转成压缩图片：把模型权重从 FP16/FP32 高精度数字压缩成 INT8、INT4 等低比特表示，文件体积和显存占用降到二分之一甚至四分之一，推理也更快。它处于“训练完成→部署上线”之间的压缩环节，常与 Pruning、Distillation 组合使用，主流算法有 GPTQ、AWQ，常见落盘格式是 GGUF。它解决的痛点很实际：大模型权重太大，消费级 GPU 的 VRAM 装不下，云端推理成本也高；量化后 70B 级模型能塞进单张显卡。代价是精度损失——量化是把连续数值“四舍五入”到少数几个档位，压得太狠（如 2-bit）模型会明显变笨。实践甜点在 4-bit：GPTQ、AWQ 在这个档位几乎无损。训练侧与之对应的技术是 Mixed Precision，推理运行方式则叫 Quantized Inference。",
+    "related": [
+      "GPTQ",
+      "AWQ",
+      "GGUF",
+      "Pruning",
+      "Distillation",
+      "VRAM",
+      "GPU",
+      "Quantized Inference"
+    ]
+  },
+  {
+    "abbr": "GPTQ",
+    "ipa": "/ˌdʒiː piː tiː ˈkjuː/",
+    "detail": "GPTQ 是一种“精打细算的舍入法”：朴素做法把每个权重独立四舍五入到低比特，误差层层累积；GPTQ 逐层量化，每量化一批权重，就利用二阶信息（Hessian 矩阵的近似）调整剩余未量化的权重来补偿误差，把整层输出的损失压到最小。它属于后训练量化（PTQ），发生在模型训练完成之后、部署之前，与 AWQ 并列为 4-bit 量化的两大主流方案，产物常进一步转成 GGUF 等格式分发。它解决的痛点是：朴素量化到 4-bit 时模型明显变笨，而 GPTQ 在 3~4 bit 仍能保持接近 FP16 的精度，让大模型得以单卡推理。它只需少量校准数据、几小时即可完成百亿模型的量化，成本远低于重新训练。在 Hugging Face 上看到的带 GPTQ 后缀的模型就是它产物，可被多种推理框架直接加载。",
+    "related": [
+      "Quantization",
+      "AWQ",
+      "GGUF",
+      "Hugging Face",
+      "Inference",
+      "VRAM"
+    ]
+  },
+  {
+    "abbr": "AWQ",
+    "ipa": "/ˌeɪ dʌbljuː ˈkjuː/",
+    "detail": "AWQ（激活感知权重量化）的思路像搬家公司“贵重物品单独打包”：研究发现模型里只有约 1% 的权重对输出影响巨大（对应激活值大的通道），粗暴统一量化会弄坏这些关键权重；AWQ 通过观察激活分布找出它们，用逐通道缩放的方式加以保护，再量化其余权重。它属于后训练量化，与 GPTQ 同为 4-bit 时代的主力方案，常配合 vLLM、TensorRT-LLM 等推理框架部署。它解决的痛点与 GPTQ 类似——低比特量化损伤精度——但特色是不依赖逐层误差补偿优化，而是面向硬件友好的缩放策略，推理速度更快，对 MoE（混合专家）等结构也更稳。实际使用中 AWQ 与 GPTQ 精度相当、各有所长，选哪个常取决于所用推理框架的支持度与硬件平台。量化后的模型同样常以 GGUF 或框架专用格式发布。",
+    "related": [
+      "Quantization",
+      "GPTQ",
+      "vLLM",
+      "TensorRT-LLM",
+      "MoE",
+      "Inference"
+    ]
+  },
+  {
+    "abbr": "GGUF",
+    "ipa": "/ˌdʒiː dʒiː juː ˈef/",
+    "detail": "GGUF 是 llama.cpp 生态的“通用行李箱”：一种把模型权重（通常已量化）和全部元数据——分词器、架构参数、上下文长度等——打包进单个文件的格式，一个文件拷走即用，无需任何额外配置。它处于“模型压缩→本地部署”链条的末端：开发者把训练好的模型转成 GGUF（常见 Q4、Q8 等量化档位），用户在 llama.cpp、Ollama 等工具里直接加载，在 CPU 或消费级 GPU 上就能跑起来。它解决的痛点是早期 GGML 格式扩展性差、兼容性混乱，每次格式升级旧模型就报废；GGUF 在设计上强调可扩展与向后兼容，因而成为本地推理的事实标准。Hugging Face 上大量开源模型都提供 GGUF 版本。它与 Quantization 紧密绑定——文件名里的 Q4_K_M 等后缀就是具体量化规格，档位越低越省显存但越损精度。",
+    "related": [
+      "llama.cpp",
+      "Ollama",
+      "Quantization",
+      "Hugging Face",
+      "Deployment",
+      "Inference"
+    ]
+  },
+  {
+    "abbr": "Pruning",
+    "ipa": "/ˈpruːnɪŋ/",
+    "detail": "剪枝如同给果树修枝：剪掉不结果或少结果的枝条，树照样活，还更省养分。对应到模型，就是识别并删除贡献微小的权重（非结构化剪枝，把权重直接置零）或整个神经元、注意力头甚至整层（结构化剪枝），让模型更小更快。它属于模型压缩三件套之一（另两件是 Quantization 和 Distillation），位于训练完成后、部署之前。它解决的痛点是大模型冗余度高：研究表明许多权重接近零、去掉几乎不影响效果。难点在于非结构化剪枝产生的稀疏矩阵需要专门的硬件或推理库才能真正提速，而激进剪枝会明显掉精度，常需配合少量恢复训练。如今“2:4 结构化稀疏”在英伟达 GPU 上有硬件级加速，剪枝与量化常组合使用，把模型压到最小。对部署到边缘设备（手机、嵌入式）的场景尤其重要。",
+    "related": [
+      "Quantization",
+      "Distillation",
+      "GPU",
+      "Deployment",
+      "Parameter"
+    ]
+  },
+  {
+    "abbr": "Catastrophic Forgetting",
+    "ipa": "/ˌkætəˈstrɒfɪk fəˈɡetɪŋ/",
+    "detail": "灾难性遗忘像一个人学了新语种却把母语忘光：神经网络在新任务上继续训练时，权重被新数据改写，原先学会的能力随之大幅退化。它出现在一切“继续训练”环节：SFT 时只顾指令数据，模型的知识问答能力可能下降；Continual Pre-training 注入领域语料，通用能力可能受损。它是神经网络“稳定性—可塑性”矛盾的体现，也是 Post-training 阶段必须时刻警惕的坑。它要解决的反面问题是：如何让模型学新技能时不丢老本事。常用缓解手段包括混入旧数据重放、降低 Learning Rate、用 LoRA 等 PEFT 方法少动原权重、以及对重要参数加正则约束（如 EWC）等。评估微调质量时，除了看新任务分数，还必须跑 MMLU 等通用 Benchmark 确认没有明显遗忘，否则就是按下葫芦浮起瓢。",
+    "related": [
+      "SFT",
+      "Continual Pre-training",
+      "LoRA",
+      "PEFT",
+      "Learning Rate",
+      "Evaluation",
+      "MMLU"
+    ]
+  },
+  {
+    "abbr": "Overfitting",
+    "ipa": "/ˌəʊvəˈfɪtɪŋ/",
+    "detail": "过拟合好比学生把练习册答案全背了下来，换套卷子就露馅：模型把训练数据里的噪声和巧合也当成了规律，训练集上分数漂亮，遇到没见过的数据就表现拉胯。它贯穿整个训练过程，是机器学习最核心的失败模式之一，典型信号是训练 Loss 持续下降而验证 Loss 开始回升。在大模型时代它依然存在：SFT 数据太少、Epoch 跑得太多、模型相对数据量太大，都容易过拟合。对抗它的工具箱叫 Regularization：Dropout 随机失活、权重衰减、Early Stopping 提前终止、增加数据量与数据增强等。监控手段是留出验证集做 Evaluation。有意思的是，大模型预训练常只跑一个 Epoch、数据近乎无限，过拟合反而少见；它更多困扰小数据微调场景，这也是微调时要勤看验证曲线的原因。",
+    "related": [
+      "Regularization",
+      "Dropout",
+      "Early Stopping",
+      "Loss",
+      "Epoch",
+      "Evaluation",
+      "SFT"
+    ]
+  },
+  {
+    "abbr": "Learning Rate",
+    "ipa": "/ˈlɜːnɪŋ reɪt/",
+    "detail": "学习率相当于下山时的步幅：步幅太大，容易一步跨过谷底、来回震荡甚至摔出去（Loss 爆炸）；步幅太小，下山慢得让人着急（训练停滞）。它是控制每次 Gradient Descent 参数更新幅度的超参数，堪称深度学习中最重要的旋钮，在 Adam 等优化器内部依然起核心作用。它作用于训练的每一步，由优化器结合梯度决定最终更新量。实践中不取固定值，而是配一套“调度”：开头 Warmup 从小渐大避免冷启动震荡，中期保持，末期按余弦或线性衰减以便精细收敛。它的痛点是极度敏感：大模型预训练常因学习率不当出现 Loss 尖刺、前功尽弃，只能靠 Checkpoint 回滚。经验法则：Batch Size 越大可用学习率越大；微调（SFT/LoRA）用的学习率远小于预训练。它与 Batch Size、Warmup 同为最重要的几个 Hyperparameter。",
+    "related": [
+      "Gradient Descent",
+      "Adam",
+      "Warmup",
+      "Hyperparameter",
+      "Batch Size",
+      "Loss",
+      "Checkpoint"
+    ]
+  },
+  {
+    "abbr": "Batch Size",
+    "ipa": "/bætʃ saɪz/",
+    "detail": "Batch Size（批大小）类似老师一次批改多少份作业：一次处理一批样本，把它们的梯度平均后再更新一次参数，而不是来一份改一次。它是训练的核心超参数，与 Learning Rate、Epoch 紧密联动，直接决定显存占用与训练速度。它在训练数据流中的位置是：数据被切成一个个 Batch，逐批做前向、反向传播。大批量的好处是 GPU 并行利用充分、梯度估计更稳、吞吐更高；代价是 VRAM 占用大，且过大的批量可能收敛到泛化较差的解，需要配合放大学习率。显存不够时可用梯度累积来模拟大批量。推理侧也有同名概念（Batching，把多个用户请求合并处理提吞吐），注意区分训练与推理两个语境。大模型预训练的全局批量常达数百万 Token，而用 LoRA 微调时批量可以很小，单卡即可跑。",
+    "related": [
+      "Learning Rate",
+      "Epoch",
+      "Hyperparameter",
+      "GPU",
+      "VRAM",
+      "Token",
+      "Batching"
+    ]
+  },
+  {
+    "abbr": "Epoch",
+    "ipa": "/ˈiːpɒk/",
+    "detail": "一个 Epoch 就是把整本习题册从头到尾刷完一遍：训练数据集被完整遍历一次称为一轮。它是训练进度的基本计量单位，与 Batch Size、总步数可直接换算：总步数等于 Epoch 数乘以每轮的批数。它处于训练循环的最外层：每一轮内逐批前向、算 Loss、反向、更新。它要回答的问题是“数据要刷几遍才够”：刷少了学不透（欠拟合），刷多了会背题（Overfitting，表现为训练 Loss 降而验证 Loss 升）。传统机器学习和 BERT 时代常跑 3~10 个 Epoch；大模型预训练因数据海量，通常只跑 1 个 Epoch 甚至不足一遍，重复数据反而可能损害性能；而 SFT 指令微调数据少，常跑 2~3 个 Epoch。判断该刷几遍，靠验证集 Evaluation 与 Early Stopping，而不是拍脑袋。",
+    "related": [
+      "Batch Size",
+      "Loss",
+      "Overfitting",
+      "Early Stopping",
+      "SFT",
+      "Evaluation"
+    ]
+  },
+  {
+    "abbr": "Checkpoint",
+    "ipa": "/ˈtʃekpɔɪnt/",
+    "detail": "Checkpoint（检查点）就像游戏存档：训练过程中定期把模型权重（以及优化器状态、步数等）快照存盘，出事了可以从存档读档重来，不必从零开始。它贯穿训练全程：预训练动辄数月，硬件故障、Loss 尖刺、断电在所难免，Checkpoint 是唯一的保险；训练结束后，不同阶段的存档还供择优——验证集表现最好的那个未必是最后一个。它解决的痛点是大模型训练的高风险高成本：一次预训练耗资可达数百万美元，没有存档机制，一次宕机就血本无归；配上自动恢复，故障只损失几小时。实践中每几百到几千步存一次，并配合 Early Stopping 挑选最优档。微调（SFT/LoRA）时同样建议多存档，事后用 Evaluation 挑出“状元档”再部署。存档文件很大，需要规划磁盘配额与保留策略。",
+    "related": [
+      "Loss",
+      "Early Stopping",
+      "Evaluation",
+      "SFT",
+      "LoRA",
+      "Pre-training"
+    ]
+  },
+  {
+    "abbr": "Loss",
+    "ipa": "/lɒs ˈfʌŋkʃn/",
+    "detail": "损失函数（Loss）是模型的“考试成绩单”：用一个数字衡量模型预测与标准答案之间的差距，分越低越好，训练的全部意义就是把这个分数压下去。它处于训练循环的核心：每批数据前向得到预测，计算 Loss，反向传播求梯度，再由 Gradient Descent 更新参数。大模型预训练的 Loss 是“预测下一个 Token”的交叉熵；SFT 同样如此，只是数据换成问答对。它解决的“问题”是：“学得好不好”必须量化才可优化，Loss 提供了这个可微分的目标。看训练曲线是最基本的调参技能：Loss 不降可能是 Learning Rate 不对；训练 Loss 降、验证 Loss 升是 Overfitting 信号；Loss 突然尖刺常需回滚 Checkpoint。要注意 Loss 低不等于好用，最终还要看下游 Evaluation 与 Benchmark 的实际表现。",
+    "related": [
+      "Gradient Descent",
+      "Checkpoint",
+      "Overfitting",
+      "Learning Rate",
+      "Token",
+      "SFT",
+      "Evaluation"
+    ]
+  },
+  {
+    "abbr": "Gradient Descent",
+    "ipa": "/ˈɡreɪdiənt dɪˈsent/",
+    "detail": "梯度下降好比蒙眼下山：看不清全局，就用脚探一探哪边是下坡（梯度方向），往那边迈一步，反复迭代直到谷底。数学上，梯度指向 Loss 增长最快的方向，反其方向按 Learning Rate 大小迈步更新参数，就能让损失逐步变小。它是几乎所有神经网络训练的发动机：前向算出 Loss，反向传播算出每个参数的梯度，再由优化器执行更新。原始版本用全量数据算梯度，太慢；实际用的是小批量随机梯度下降（SGD）及其改进版——带动量的 SGD、自适应学习率的 Adam 等，后者是大模型训练的事实标准。它解决的痛点是“万亿个参数到底怎么调”：没有解析解，只能靠迭代逼近。配套稳定器有 Gradient Clipping 防梯度爆炸、Warmup 稳住起步、Mixed Precision 提速省显存。",
+    "related": [
+      "Loss",
+      "Learning Rate",
+      "Adam",
+      "Gradient Clipping",
+      "Warmup",
+      "Mixed Precision"
+    ]
+  },
+  {
+    "abbr": "Adam",
+    "ipa": "/ˈædəm/",
+    "detail": "Adam（自适应矩估计）可以理解为“自带智能变速箱的下山法”：普通梯度下降让所有参数共用一个 Learning Rate；Adam 为每个参数分别记录梯度的一阶矩（均值，相当于动量）和二阶矩（方差，用来调节步幅），梯度平缓的方向走大步、震荡剧烈的方向走小步，几乎开箱即用。它是深度学习十年来默认的优化器，大模型预训练和 SFT 几乎全部使用它或其变体 AdamW（加入权重衰减，兼具 Regularization 效果）。它解决的痛点是 SGD 调参痛苦、收敛慢、对稀疏梯度不友好。代价是要为每个参数额外存两个状态量，显存开销是权重本身的两倍——这正是大模型全参 FFT 显存爆炸的主因之一，也催生了 8-bit Adam、分页优化器等省显存方案。实践中它通常配合 Warmup 与 Gradient Clipping 使用，稳定性更好。",
+    "related": [
+      "Gradient Descent",
+      "Learning Rate",
+      "Warmup",
+      "Gradient Clipping",
+      "FFT",
+      "VRAM",
+      "Regularization"
+    ]
+  },
+  {
+    "abbr": "Warmup",
+    "ipa": "/ˈlɜːnɪŋ reɪt ˈwɔːmʌp/",
+    "detail": "Warmup（学习率预热）如同汽车冷启动后先低速热车再上路：训练刚开始时，把 Learning Rate 从 0 或很小的值按线性逐步拉升到目标值，之后再进入正常的衰减调度。它是学习率调度器的前段，作用于训练最开始的数百到数千步。它解决的痛点很实际：训练初期模型参数远离好解、梯度又大又乱，Adam 的二阶矩统计也还没“热身”，此时若直接满功率学习，过猛的更新会把模型打飞（Loss 发散或尖刺），大模型尤其脆弱；预热让统计量与参数平稳进入状态。大模型预训练几乎标配 Warmup（典型 2000 步左右），微调（SFT/LoRA）也建议保留几十到几百步。它与余弦衰减、Gradient Clipping 一起构成大模型训练的“稳定三件套”，相关步数也是重要的 Hyperparameter。",
+    "related": [
+      "Learning Rate",
+      "Adam",
+      "Gradient Clipping",
+      "Loss",
+      "Hyperparameter",
+      "Pre-training"
+    ]
+  },
+  {
+    "abbr": "Gradient Clipping",
+    "ipa": "/ˈɡreɪdiənt ˈklɪpɪŋ/",
+    "detail": "梯度裁剪像给汽车装上限速器：当某步梯度的总范数超过阈值（如 1.0），就把它整体等比缩小到阈值以内，方向不变、幅度受限。它作用于反向传播之后、优化器更新之前，是训练稳定性的保险丝。它解决的痛点是“梯度爆炸”：深层网络反向传播时梯度可能连乘放大，个别批次（坏数据、极端样本）会突然产生巨大梯度，一步就把参数打飞，表现为 Loss 突然飙成 NaN 或尖刺——这在 RNN 时代臭名昭著，大模型训练同样常见。裁剪把最坏情况的伤害封顶，让训练曲线平滑可救。它与 Warmup、合理的学习率调度并称稳定训练三件套，用 Adam 也不能省。注意它防的是“爆炸”；“梯度消失”问题要靠 Residual 残差连接和 LayerNorm/RMSNorm 这类归一化结构解决。",
+    "related": [
+      "Gradient Descent",
+      "Warmup",
+      "Loss",
+      "Adam",
+      "Residual",
+      "LayerNorm"
+    ]
+  },
+  {
+    "abbr": "Mixed Precision",
+    "ipa": "/mɪkst prɪˈsɪʒn ˈtreɪnɪŋ/",
+    "detail": "混合精度训练好比“草稿用铅笔、存档用钢笔”：前向和反向计算用 FP16 或 BF16 半精度（快、省显存），权重主副本和梯度累加用 FP32 全精度（保证数值稳定），两头兼顾。它作用于训练的数值计算层，是现代 GPU 训练的标配加速手段——Tensor Core 对半精度有数倍算力加成。它解决的痛点是：纯 FP32 训练又慢又占 VRAM，而纯 FP16 数值范围窄、容易上溢下溢（于是有了 Loss Scaling 技巧保护小梯度）；BF16 数值范围与 FP32 相当，成为大模型主流选择。效果是训练吞吐提升 2~3 倍、显存占用近半，且精度几乎无损。它与 Quantization（部署侧的低比特压缩）思路相通但阶段不同；推理侧对应的是 Quantized Inference。当今大模型预训练普遍采用 BF16 混合精度。",
+    "related": [
+      "Quantization",
+      "Quantized Inference",
+      "GPU",
+      "VRAM",
+      "Loss",
+      "Gradient Descent"
+    ]
+  },
+  {
+    "abbr": "Continual Pre-training",
+    "ipa": "/kənˈtɪnjuəl priː ˈtreɪnɪŋ/",
+    "detail": "继续预训练类似让大学毕业生再去读个“专业进修班”：在已训练好的通用基座模型上，追加大量某领域（医疗、法律、中文等）或更新时段的无标注语料，继续做“预测下一个 Token”的自监督训练，让模型补专业知识、追新信息。它处于预训练与 Post-training 之间：先 Continual Pre-training 注入领域知识，再 SFT/RLHF 教它运用这些知识对话。它解决的痛点是：从零预训练太贵（千万美元级），而直接 SFT 塞领域知识容量不够、还容易 Catastrophic Forgetting；用几亿到几十亿 Token 继续预训练是性价比极高的中间路线。关键技巧是混入部分通用语料防遗忘、使用较小的学习率，之后再接 FFT 或 LoRA 微调。它也可能带来知识冲突，完成后要仔细做 Evaluation 确认通用能力没有退化。",
+    "related": [
+      "Pre-training",
+      "SFT",
+      "Post-training",
+      "Catastrophic Forgetting",
+      "Token",
+      "LoRA",
+      "FFT"
+    ]
+  },
+  {
+    "abbr": "Curriculum Learning",
+    "ipa": "/kəˈrɪkjələm ˈlɜːnɪŋ/",
+    "detail": "课程学习模仿人类教育：先学加减乘除，再学微积分——把训练样本按由易到难的顺序喂给模型，而不是随机乱序一锅端。课程可以按文本长度、噪声程度、任务复杂度等标准编排，也可以由模型当前表现动态调整。它作用于训练数据的组织方式，可用于预训练（先短文后长文、先通用后专业）、SFT 乃至 RL（先易题后难题）。它解决的痛点是：随机数据流让模型一开始就被难题“劝退”，梯度噪声大、收敛慢；循序渐进的课程提供更平滑的学习信号，加快收敛并提升最终性能，在小数据或困难任务上收益尤其明显。实践中完全严格的排序并不常用，更常见分阶段式课程：预训练后期混入高质量数据、推理训练逐步加难题，都是它的变体。课程的编排标准本身也是一种需要实验确定的 Hyperparameter，用错顺序反而可能拖累效果。",
+    "related": [
+      "Pre-training",
+      "SFT",
+      "RL",
+      "Loss",
+      "Hyperparameter"
+    ]
+  },
+  {
+    "abbr": "Regularization",
+    "ipa": "/ˌreɡjələraɪˈzeɪʃn/",
+    "detail": "正则化是防止学生“死读书”的一套纪律总称：凡是刻意给模型加约束、抑制它把训练数据的噪声当规律（Overfitting）的技术都算。常见成员有：权重衰减（惩罚过大的参数，AdamW 优化器已内置）、Dropout（训练时随机丢弃神经元）、Early Stopping（验证集不进步就停）、数据增强、标签平滑等。它作用于训练目标或训练过程，与具体模型结构无关，是机器学习的经典工具箱。它解决的痛点是：当模型容量大于数据信息量时必然过拟合——训练 Loss 漂亮、泛化拉胯。大模型时代情况特殊：预训练数据近乎无限、只过一遍，过拟合少见，正则用得很轻；但在小数据微调（SFT、LoRA）中，Epoch 多、数据少，正则化（尤其早停与适度权重衰减）依然关键，需配合验证集 Evaluation 使用。",
+    "related": [
+      "Overfitting",
+      "Dropout",
+      "Early Stopping",
+      "Adam",
+      "SFT",
+      "LoRA",
+      "Evaluation"
+    ]
+  },
+  {
+    "abbr": "Dropout",
+    "ipa": "/ˈdrɒpaʊt/",
+    "detail": "Dropout（随机失活）类似公司搞“轮岗演习”：训练时每批数据随机让一部分神经元（如 10%）“请假”（输出置零），迫使网络不依赖任何单个“明星员工”，学出多条冗余的信息通路；推理时全员到岗、输出按比缩放。它是经典 Regularization 手段，作用于训练阶段每一层的前向传播。它解决的痛点是过拟合的一种隐蔽形式——神经元间的“协同适应”：某些神经元抱团记住训练集的巧合模式，换数据就失效；随机失活打散这种依赖，等效于同时训练大量子网络并做集成，泛化明显增强。值得注意的是，现代大模型预训练因数据海量、单 Epoch 不易过拟合，Dropout 常被设为 0；但在数据有限的微调（SFT）和较小模型上，它仍是防 Overfitting 的常用武器，与 Early Stopping 搭配使用效果更好。",
+    "related": [
+      "Regularization",
+      "Overfitting",
+      "SFT",
+      "Early Stopping",
+      "Pre-training",
+      "Epoch"
+    ]
+  },
+  {
+    "abbr": "Early Stopping",
+    "ipa": "/ˈɜːli ˈstɒpɪŋ/",
+    "detail": "Early Stopping（早停）像教练看训练赛成绩决定何时收兵：训练过程中持续在验证集上做 Evaluation，一旦发现指标连续若干轮不再提升甚至变差，就立即终止训练，并取回历史最佳 Checkpoint。它作用于训练循环的调度层，是最朴素也最有效的 Regularization 手段之一。它解决的痛点是：训练越久训练 Loss 越低，但过了某个点模型开始背题（Overfitting），泛化能力反而下降；与其事后懊悔，不如在巅峰时刻刹车。它零成本、可自动化，特别适合 SFT 微调——指令数据少、Epoch 一多就过拟合，靠早停能稳拿最佳点。使用要点：验证集要有代表性；“耐心值”（patience）别设太小，以免被指标噪声误停；还要确保 Checkpoint 保存策略能找回最优档而不是最后一档，否则早停就失去了意义。",
+    "related": [
+      "Overfitting",
+      "Regularization",
+      "Checkpoint",
+      "Evaluation",
+      "Epoch",
+      "SFT",
+      "Loss"
+    ]
+  },
+  {
+    "abbr": "Hyperparameter",
+    "ipa": "/ˌhaɪpəpəˈræmɪtə(r)/",
+    "detail": "超参数好比烹饪前就要定好的“火候与配料比例”：盐放多少、火开多大，得凭经验事先设定，无法在烹饪过程中自动调整。对应到训练，超参数是人为设定、不通过梯度下降学习的配置项，典型的有 Learning Rate、Batch Size、Epoch 数、Dropout 率、Warmup 步数、权重衰减，乃至层数、隐藏维度等结构参数（注意区别于 Parameter——模型权重才是“参数”，靠训练习得）。它位于训练流程的最外层配置，直接决定成败：同一个模型，超参数不当可以完全不收敛，调得好则事半功倍。痛点是它没有解析最优解，只能靠经验、网格/随机搜索或贝叶斯优化反复试验；大模型时代一次试验成本极高，于是盛行先用小模型按 Scaling Law 外推超参、再放大验证的策略。微调时也有类似迁移：沿用社区验证过的 LoRA 超参模板能省大量试错。",
+    "related": [
+      "Learning Rate",
+      "Batch Size",
+      "Epoch",
+      "Dropout",
+      "Warmup",
+      "Parameter",
+      "Scaling Law"
+    ]
+  },
+  {
+    "abbr": "Evaluation",
+    "ipa": "/ˈmɒdl ɪˌvæljuˈeɪʃn/",
+    "detail": "模型评估就像给产品做质检：训练出来的模型不能自卖自夸，要用没见过的数据与标准化考卷客观打分。它贯穿模型生命周期：训练中用验证集监控（配合 Early Stopping 与挑选 Checkpoint）、训练后用测试集与 Benchmark（MMLU、HumanEval、C-Eval 等）定档、上线前做人评与安全测评（Red Teaming）、上线后持续监控线上表现。评估方式分三层：Loss/困惑度看语言建模能力；自动基准看知识与推理；人工或模型评审（Chatbot Arena 式对战）看真实体验。它解决的痛点是“感觉好用”不可信：模型会 Hallucination、会迎合提问者，必须量化对比才能指导迭代与选型。难点是基准会被“刷分”污染（测试题泄漏进训练集），业界因此不断出新题、加过程评估。没有评估，微调是否进步、是否发生 Catastrophic Forgetting 都无从判断。",
+    "related": [
+      "Benchmark",
+      "MMLU",
+      "HumanEval",
+      "C-Eval",
+      "Early Stopping",
+      "Checkpoint",
+      "Hallucination",
+      "Red Teaming",
+      "Chatbot Arena"
+    ]
+  }
+]

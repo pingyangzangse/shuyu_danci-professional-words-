@@ -1,0 +1,447 @@
+[
+  {
+    "abbr": "Inference",
+    "ipa": "/ˈɪnfərəns/",
+    "detail": "推理指模型训练完成后，用它处理新输入并产出结果的过程。打个比方：训练像学生上课学知识，推理则是毕业后正式上岗，把学到的本事用在真实问题上。和 Chatbot 聊天、让 AI 翻译，背后发生的都是推理。\n\n在 AI 体系脉络里，模型生命周期分训练与推理两大阶段：Pre-training、SFT、RLHF 属于训练侧，推理则是模型面向用户、创造价值的终点。单次推理的数据流是：输入 Prompt 经 Tokenization 切成 Token，进入 Transformer 逐层计算，输出 Logits，再由 Decoding 策略选出下一个 Token，循环往复。\n\n它解决的痛点是：训练好的参数只是硬盘上的文件，不跑推理就毫无用处；且推理持续发生、按量计费，成本与速度直接决定产品体验。Latency、Throughput、TTFT 等指标都用于衡量推理质量，也催生了 vLLM 等推理优化框架。",
+    "related": [
+      "Decoding",
+      "Token",
+      "Logits",
+      "Latency",
+      "Throughput",
+      "vLLM",
+      "Pre-training",
+      "SFT"
+    ]
+  },
+  {
+    "abbr": "Decoding",
+    "ipa": "/ˌdiːˈkəʊdɪŋ/",
+    "detail": "解码指模型每算出一组下一个 Token 的概率分布后，按某种策略从中挑出一个 Token 的过程。可以想象成点菜：模型端上一份菜单，每道菜标着受欢迎程度（概率），解码策略就是点菜规则——可以每次都点最热门的（Greedy Decoding），也可以在热门菜里掷骰子碰运气（随机采样）。\n\n在 Transformer 数据流中，解码位于最末端：输入→Embedding→注意力层→输出 Logits，经 Softmax 变成概率分布后，就轮到解码策略登场。选出的 Token 拼回输入，模型再算下一个，循环直到回答完成。\n\n它解决的问题是：概率分布本身不会替你做决定，同样的分布用不同策略会得到风格迥异的文本。Temperature、Top-k、Top-p、Beam Search 都是解码策略，直接决定生成文本的质量、多样性与可控性，因此解码参数调优是推理部署中的日常功课。",
+    "related": [
+      "Greedy Decoding",
+      "Temperature",
+      "Top-k",
+      "Top-p",
+      "Beam Search",
+      "Logits",
+      "Softmax",
+      "Token"
+    ]
+  },
+  {
+    "abbr": "Greedy Decoding",
+    "ipa": "/ˈɡriːdi ˌdiːˈkəʊdɪŋ/",
+    "detail": "贪心解码是最简单的解码策略：每一步都从模型给出的概率分布里，直接挑选概率最高的那个 Token。就像走迷宫时永远只走眼前最宽的那条路，绝不东张西望。\n\n它处于 Transformer 数据流的最后一环：模型输出 Logits、经 Softmax 得到概率分布后，贪心解码取最大值作为下一个 Token，拼回输入继续下一轮，直到结束。它是所有解码策略的基准，Top-k、Top-p、Beam Search 都是在它基础上的变化。\n\n它解决的是如何从概率分布确定一个 Token 的问题。优点是快、确定性强、结果可复现，同样的 Prompt 永远得到同样的回答，适合代码生成、事实问答等要求精确的场合。缺点也明显：局部最优未必全局最优，容易陷入重复啰嗦、缺乏新意。因此在开放式创作中，人们常引入 Temperature 等随机性手段来打破贪心的僵硬。",
+    "related": [
+      "Decoding",
+      "Temperature",
+      "Top-k",
+      "Top-p",
+      "Beam Search",
+      "Logits"
+    ]
+  },
+  {
+    "abbr": "Temperature",
+    "ipa": "/ˈtemprətʃə(r)/",
+    "detail": "温度是一个调节生成随机性的旋钮，作用在模型输出的 Logits 上：选 Token 之前先把所有 Logits 除以温度值，再算 Softmax 概率。温度低时，高概率 Token 的优势被放大，输出保守稳定；温度高时，概率分布被烫平，冷门词也有机会被选中，输出更天马行空。\n\n在推理流程中，它位于 Logits 计算之后、Decoding 采样之前，是最常被调整的推理参数之一，常与 Top-p、Top-k 组合使用。\n\n它解决的痛点是：同一个模型要服务不同场景——客服问答需要严谨一致，创意写作需要灵感迸发，不可能为每个场景重新训练。调温度就像给同一位厨师交代按菜谱做还是自由发挥，零成本切换输出风格。温度设为 0 近似 Greedy Decoding；过高则容易胡言乱语，放大 Hallucination。因此温度没有标准答案，需在确定性与多样性之间按业务目标权衡。",
+    "related": [
+      "Logits",
+      "Softmax",
+      "Decoding",
+      "Top-p",
+      "Top-k",
+      "Greedy Decoding",
+      "Hallucination"
+    ]
+  },
+  {
+    "abbr": "Top-p",
+    "ipa": "/tɒp piː/",
+    "detail": "核采样的规则是：把下一个 Token 的候选按概率从高到低排序，从第一个开始累加概率，累积到 p（如 0.9）为止，只在这个最小的核心集合里采样，集合之外的候选直接丢弃。好比投票时只从得票合计占九成的头部候选人里选，长尾的小透明一概不考虑。\n\n它位于推理末端的 Decoding 环节，在 Softmax 得到概率分布之后、真正采样之前起作用，常与 Temperature 搭配使用。\n\n它要解决的痛点是 Top-k 的僵化：Top-k 固定保留 k 个候选，但概率分布的形状千变万化——有时答案几乎唯一（如 1+1 等于几），保留 50 个候选会放进一堆噪声；有时几十个词都合理，只留 5 个又太死板。Top-p 按累积概率动态伸缩候选集合，分布尖锐时自动收窄、分布平坦时自动放宽，因而成为当前聊天模型最常用的采样方式。少了这类截断机制，纯随机采样会频繁抽到离谱的词，文本质量明显下滑。",
+    "related": [
+      "Top-k",
+      "Temperature",
+      "Decoding",
+      "Softmax",
+      "Token"
+    ]
+  },
+  {
+    "abbr": "Top-k",
+    "ipa": "/tɒp keɪ/",
+    "detail": "Top-k 采样的规则很直白：每一步只在概率最高的前 k 个 Token 中重新归一化并采样，第 k 名之后的候选全部淘汰。如同班级选代表只看前 k 名尖子生，其余同学没有机会。\n\n它处于 Decoding 环节，在模型输出 Logits、经 Softmax 得到概率分布之后执行，是最经典的截断采样方法之一，后来衍生出更灵活的 Top-p。\n\n它解决的问题是：词表（Vocabulary）往往有数万甚至十几万 Token，纯随机采样时哪怕概率只有百万分之一的长尾词也可能被抽中，导致输出突然蹦出莫名其妙的词。Top-k 一刀切掉长尾，保证输出始终在靠谱候选里打转，显著提升连贯性。局限在于 k 固定：答案唯一的场景里前 k 个仍混进噪声，开放创作时固定的 k 又限制发挥，这一矛盾正是 Top-p 要改进的。实际使用时 k 常与 Temperature 联合调整。",
+    "related": [
+      "Top-p",
+      "Temperature",
+      "Decoding",
+      "Vocabulary",
+      "Token",
+      "Softmax"
+    ]
+  },
+  {
+    "abbr": "Beam Search",
+    "ipa": "/biːm sɜːtʃ/",
+    "detail": "束搜索在生成时不只保留一条候选序列，而是同时维护 b 条（束宽）得分最高的半成品句子：每一步给每条候选都尝试扩展所有可能的下一个 Token，再从全部组合里挑出总分最高的 b 条继续往前走，最后取整体得分最高的一条作为答案。像一群人分头探路，每一步都只留下最有希望的几条路线。\n\n它属于 Decoding 策略的一种，位于模型输出概率分布之后。与每步只看眼前最高分的 Greedy Decoding 相比，它通过保留多条路径去逼近全局更优。\n\n它要解决的问题是贪心策略的短视：有时第一步选次优的词，整句反而更好，贪心却永远无法回头。束搜索用更多计算换取更优整体结果，在机器翻译、摘要、语音识别（ASR）等答案相对确定的任务中曾是标配。代价是计算量和显存占用随束宽成倍增长，且对开放式聊天容易产出保守、重复的文本，因此现代 LLM 对话场景更多使用 Top-p 采样，束搜索则退守翻译等结构化任务。",
+    "related": [
+      "Greedy Decoding",
+      "Decoding",
+      "Top-p",
+      "Token",
+      "ASR",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Streaming",
+    "ipa": "/ˈstriːmɪŋ/",
+    "detail": "流式输出指模型不等到整段回答生成完毕，而是每产出一个（或几个）Token 就立刻推送给用户，就像现场直播而非录播。聊天界面里文字一个字一个字蹦出来的打字机效果，就是流式输出。\n\n它位于推理服务的输出环节：Decode Stage 本就是逐 Token 自回归生成的，流式输出只是把这个天然过程实时透传到前端，技术上常通过 SSE 或 WebSocket 实现，调用 OpenAI API 时把 stream 参数设为 true 即可开启。\n\n它解决的痛点是首字等待焦虑：生成长回答可能要几十秒，若一次性返回，用户只能对着加载图标干等。流式输出让用户在 TTFT 之后立刻看到内容在生长，主观等待感大幅降低，还能边看边判断回答是否跑偏、随时中断。它不改变模型计算本身，却极大改善了交互体验，如今已成为 Chatbot 类 LLM 应用的默认形态。",
+    "related": [
+      "Token",
+      "TTFT",
+      "Decode Stage",
+      "OpenAI API",
+      "Chatbot",
+      "API"
+    ]
+  },
+  {
+    "abbr": "Speculative Decoding",
+    "ipa": "/ˈspekjələtɪv ˌdiːˈkəʊdɪŋ/",
+    "detail": "投机解码的玩法是小马拉草稿、大马来盖章：先用一个小而快的草稿模型一口气猜出后面好几个 Token，再让目标大模型一次性并行验证，猜对的全部采纳，从第一个猜错处由大模型自己接棒。好比实习生先写初稿，专家快速审一遍，对的部分直接通过。\n\n它作用于 Decode Stage 的加速：自回归生成原本每个 Token 都要完整跑一遍大模型，投机解码把逐字写变成成段批，一次大模型前向计算最多能确认多个 Token。\n\n它要解决的痛点是：大模型推理慢的根本原因之一是每步生成都受显存带宽拖累，而验证一批草稿 Token 与生成一个 Token 的开销几乎相同。只要小模型猜得够准，吞吐可提升两三倍，且数学上保证输出分布与原模型完全一致，不像 Quantization 那样牺牲精度。代价是要同时维护两个模型，工程复杂度上升，vLLM、TensorRT-LLM 等框架均已支持。",
+    "related": [
+      "Decode Stage",
+      "Token",
+      "Quantization",
+      "vLLM",
+      "TensorRT-LLM",
+      "Throughput"
+    ]
+  },
+  {
+    "abbr": "vLLM",
+    "ipa": "/ˌviː ˌel el ˈem/",
+    "detail": "vLLM 是伯克利团队开源的高性能 LLM 推理服务框架，v 取 versatile（通用）之意。可以把它想成大模型世界的高并发餐厅管理系统：同样的厨房（GPU），普通餐馆一次只伺候几桌，它却能同时招待几百桌还不乱。\n\n在 AI 应用链条中，它位于模型训练完成后的部署环节：把训练好的 LLM 加载进 GPU，对外提供与 OpenAI API 兼容的接口，承接大量并发请求。核心创新是 PagedAttention——借鉴操作系统分页思想管理 KV Cache，配合 Continuous Batching 动态调度，大幅提升 Throughput。\n\n它要解决的痛点是：早期推理服务显存浪费严重、并发一高就排队，GPU 成本居高不下。vLLM 把显存利用率从不足一半提升到接近打满，同样硬件下吞吐可提升数倍，直接摊薄每次调用的算力成本，是自建模型服务的默认选项之一。",
+    "related": [
+      "PagedAttention",
+      "KV Cache",
+      "Batching",
+      "TGI",
+      "TensorRT-LLM",
+      "GPU",
+      "Throughput",
+      "OpenAI API"
+    ]
+  },
+  {
+    "abbr": "PagedAttention",
+    "ipa": "/ˈpeɪdʒd əˈtenʃn/",
+    "detail": "PagedAttention 是 vLLM 提出的显存管理技术，核心思想借鉴操作系统的虚拟内存分页：把每个请求的 KV Cache 切成固定大小的页分散存放，用页表记录映射，按需分配、用完即还，不再要求每个序列独占一整块连续显存。就像图书馆不再给每位读者预留整排书架，而是按实际借阅量发放分散的书格。\n\n它位于推理引擎的显存调度层，专门管理 Decode Stage 中不断增长的 KV Cache，是 vLLM 高吞吐的基石，后被 TGI、TensorRT-LLM 等效仿。\n\n它要解决的痛点是：KV Cache 的大小随序列长度动态变化，传统做法按最大长度预留连续显存，造成大量碎片——就像为可能说一千句话的客人按一千句备桌，结果他只说了十句。分页管理让碎片率降到接近零，省下的显存可塞下更多并发请求（配合 Batching），Throughput 成倍提升，推理成本大幅下降。",
+    "related": [
+      "KV Cache",
+      "vLLM",
+      "Decode Stage",
+      "VRAM",
+      "TGI",
+      "TensorRT-LLM",
+      "Batching",
+      "Throughput"
+    ]
+  },
+  {
+    "abbr": "TGI",
+    "ipa": "/tekst ˌdʒenəˈreɪʃn ˈɪnfərəns/",
+    "detail": "TGI 是 Hugging Face 官方出品的大模型推理服务框架。可以把它理解为 Hugging Face 模型仓库配套的官方出货流水线：从 Hub 下载的开源模型，用 TGI 一条命令就能架成生产级服务。\n\n它位于模型部署环节：把训练好的 LLM 加载到 GPU，对外暴露 HTTP 接口并处理并发请求，内置 Continuous Batching、Flash Attention、分页式 KV Cache 管理、Quantization 与流式输出。\n\n它要解决的痛点是：研究用的模型代码只关心能不能跑，而生产环境关心并发、延迟与成本——直接用 transformers 库逐条处理请求，GPU 利用率极低，几个用户同时提问就卡死。TGI 把这些工程难题打包成开箱即用的服务。它与 vLLM 并列为两大主流开源推理框架，胜在与 Hugging Face 生态无缝衔接。",
+    "related": [
+      "Hugging Face",
+      "LLM",
+      "GPU",
+      "Batching",
+      "Flash Attention",
+      "PagedAttention",
+      "Quantization",
+      "vLLM"
+    ]
+  },
+  {
+    "abbr": "TensorRT-LLM",
+    "ipa": "/ˈtensə(r) ˌɑː(r) tiː ˌel el ˈem/",
+    "detail": "TensorRT-LLM 是 NVIDIA 推出的 LLM 推理优化引擎，可以看作给自家 GPU 量身定做的涡轮增压套件：同样一台发动机，经过深度调校能榨出更高的马力。\n\n它位于模型部署环节，介于模型权重与 GPU 硬件之间：把训练好的模型编译成高度优化的执行计划，融合计算算子、精调显存布局、支持低精度计算（结合 Quantization）、多卡并行与 Continuous Batching 调度，最终生成可对外服务的推理引擎。\n\n它要解决的痛点是：通用框架为了兼容性往往无法吃透特定硬件的全部能力。TensorRT-LLM 由芯片厂商亲自操刀，对 NVIDIA GPU 的计算通路了如指掌，同等硬件下常能提供业界领先的 Latency 与 Throughput。代价是与 NVIDIA 生态深度绑定（依赖 CUDA），模型转换有一定工程门槛，适合对性能斤斤计较的大规模部署。",
+    "related": [
+      "GPU",
+      "CUDA",
+      "Quantization",
+      "Batching",
+      "Latency",
+      "Throughput",
+      "vLLM"
+    ]
+  },
+  {
+    "abbr": "llama.cpp",
+    "ipa": "/ˈlɑːmə dɒt ˌsiː piː ˈpiː/",
+    "detail": "llama.cpp 是开发者 Georgi Gerganov 开源的 LLM 推理引擎，用纯 C/C++ 写成，最初只为在普通笔记本电脑上跑 LLaMA 模型，如今已支持几乎所有主流开源模型。它像一位轻功高手：别人要重型卡车才搬得动的模型，它靠精打细算在消费级设备上就能运转。\n\n它位于推理部署链条的端侧本地位置：无需联网、无需高端显卡，在 CPU 上即可推理，也支持 Metal、CUDA 等硬件加速。围绕它形成了 GGUF 模型格式生态——社区把模型 Quantization 成 4bit、8bit 后转换分发，普通电脑也能跑大模型。\n\n它要解决的痛点是：云端 API 方便但数据要出门、按量付费、断网就瘫痪；本地部署又常被显存门槛劝退。llama.cpp 用极致的量化与内存优化把硬件门槛拉到最低，让隐私敏感、离线、低成本的场景成为可能。Ollama 等更友好的工具，底层正是基于它构建的。",
+    "related": [
+      "LLaMA",
+      "GGUF",
+      "Quantization",
+      "Ollama",
+      "CUDA",
+      "GPU"
+    ]
+  },
+  {
+    "abbr": "Ollama",
+    "ipa": "/əˈlɑːmə/",
+    "detail": "Ollama 是一个让普通人在自己电脑上一键养大模型的工具：安装后只需敲一句 ollama run 加模型名，它就自动下载模型、配置环境、启动对话，把原本需要一整天折腾的本地部署压缩到几分钟。可以把它理解为本地大模型界的应用商店加播放器。\n\n它位于端侧部署环节，底层基于 llama.cpp，上层提供统一的模型仓库（托管 GGUF 格式的量化模型）、命令行交互界面和本地 API 服务，开发者可以像调用云端接口一样调用本地模型。\n\n它要解决的痛点是：本地跑大模型曾经是极客专属运动——找模型、转换格式、编译引擎、调参数，每一步都能劝退一批人。Ollama 把整条链路产品化，让隐私敏感（数据不出本机）、离线可用、零调用成本的本地 AI 变得触手可及。对于制造业涉及机密图纸、客户数据的场景，或者开发者想快速试验 Qwen、DeepSeek 等开源 LLM，它几乎是最省事的入口。",
+    "related": [
+      "llama.cpp",
+      "GGUF",
+      "API",
+      "Qwen",
+      "DeepSeek",
+      "LLM",
+      "Deployment"
+    ]
+  },
+  {
+    "abbr": "GPU",
+    "ipa": "/ˌdʒiː piː ˈjuː/",
+    "detail": "GPU 原本是设计来渲染游戏画面的显卡核心，因为图形计算需要对海量像素同时做同样的数学运算，它天生就有成千上万个并行计算核心。后来人们发现神经网络的训练与推理本质上也是海量矩阵运算，GPU 便华丽转身为 AI 时代的主力算力。打个比方：CPU 像几位全能的数学教授，擅长复杂的串行思考；GPU 则像上万名小学生组成的方阵，每人只会简单计算，但一起动手时气势磅礴。\n\n在 AI 体系中，它处于最底层的硬件层：训练时的 Pre-training 和推理时的每一次前向计算，最终都落在 GPU 的计算核心上执行，模型权重和 KV Cache 住在它的 VRAM 里。\n\n它解决的问题是算力瓶颈：用 CPU 训练大模型可能需要数百年，GPU 把矩阵运算并行化后压缩到几周。如今 NVIDIA GPU 加 CUDA 生态是行业标准，Google TPU、各类 NPU 则是其他玩家对同一问题的不同答卷。",
+    "related": [
+      "CUDA",
+      "VRAM",
+      "TPU",
+      "NPU",
+      "Pre-training",
+      "KV Cache",
+      "Inference"
+    ]
+  },
+  {
+    "abbr": "NPU",
+    "ipa": "/ˌen piː ˈjuː/",
+    "detail": "NPU 是专为神经网络计算设计的芯片，不像 CPU 那样什么都能干，也不像 GPU 那样从图形渲染半路出家，它从电路设计之初就只为高效执行矩阵乘加这类 AI 核心运算服务。好比厨房里的专用榨汁机，功能单一，但榨起汁来又快又省电。\n\n在 AI 硬件版图中，它与 GPU、TPU 并列，但主战场在端侧：手机、笔记本、智能摄像头里的 AI 芯片大多是 NPU（如苹果的 Neural Engine、高通的 Hexagon），推理任务直接在本机完成，不必上云；大模型训练仍主要靠 GPU 集群。\n\n它要解决的痛点是端侧推理的两大硬约束：功耗与延迟（Latency）。手机跑 AI 若用 CPU，又烫又耗电；若传云端，隐私出机且受网络摆布。NPU 用专用电路换取数量级的能效比提升，让拍照美化、语音唤醒、离线翻译等功能常驻设备。随着 SLM 兴起，NPU 加本地小模型正成为端侧 AI 的标准配方。",
+    "related": [
+      "GPU",
+      "TPU",
+      "SLM",
+      "Inference",
+      "Latency"
+    ]
+  },
+  {
+    "abbr": "TPU",
+    "ipa": "/ˌtiː piː ˈjuː/",
+    "detail": "TPU 是 Google 自研的 AI 加速芯片，专为神经网络中最核心的张量运算打造。可以把它看作 Google 为自家 AI 工厂定制的专用机床：不对外零售，只在 Google 的云数据中心里服役。\n\n在 AI 硬件版图中，它与 GPU、NPU 三足鼎立：GPU 是通用王者，NPU 主攻端侧，TPU 主打云端大规模训练与推理，Google 的 Gemini 系列模型就主要训练在 TPU 集群上。普通用户无法购买 TPU 硬件，只能通过 Google Cloud 租用算力。\n\n它要解决的问题与 GPU 相同——矩阵运算的算力瓶颈，但答卷不同：作为专用集成电路，它砍掉一切与 AI 无关的通用功能，把功耗和面积全部堆在矩阵乘法单元上，并用专门互联技术把数千颗芯片连成超级计算机。它提醒我们：AI 算力并非只有 NVIDIA 一条路，云厂商自研芯片正在让 CUDA 生态的垄断地位出现松动。",
+    "related": [
+      "GPU",
+      "NPU",
+      "CUDA",
+      "Inference"
+    ]
+  },
+  {
+    "abbr": "CUDA",
+    "ipa": "/ˈkjuːdə/",
+    "detail": "CUDA 是 NVIDIA 推出的 GPU 并行计算平台与编程模型，让开发者能用扩展的 C/C++ 等语言直接指挥 GPU 上成千上万个计算核心干活。打个比方：GPU 是一支万人施工队，CUDA 就是那套指挥语言，没有它，队伍再庞大也无法为 AI 所用。\n\n在 AI 技术栈中，它位于最底层的软硬件接口层：上层是 PyTorch、TensorFlow 等框架，再上层才是模型，所有框架的矩阵运算最终都要翻译成 CUDA 指令在 NVIDIA GPU 上执行，训练和推理都离不开它。\n\n它解决的是通用语言驱动不了 GPU 做通用计算的问题。2007 年问世后，NVIDIA 围绕它经营了近二十年生态：cuDNN、TensorRT-LLM 等库层层叠加，形成极高的迁移成本——这就是著名的 CUDA 护城河。其他芯片厂商挑战 NVIDIA，最大的障碍往往不是硬件，而是这套深入人心的软件生态。",
+    "related": [
+      "GPU",
+      "TensorRT-LLM",
+      "TPU",
+      "NPU",
+      "Inference"
+    ]
+  },
+  {
+    "abbr": "VRAM",
+    "ipa": "/ˈviːræm/",
+    "detail": "VRAM 是焊在 GPU 板卡上的高速专用内存，专门存放模型权重、KV Cache 和中间计算结果。打个比方：GPU 是厨师，VRAM 就是手边的操作台——台面越大，能同时摊开的食材越多；台面太小就得频繁往返仓库取料，速度骤降。\n\n在推理系统中，它处于决定模型能否运行的咽喉位置：模型权重必须先完整装进 VRAM 才能计算，推理时每个请求的 KV Cache 也在这里生长。70 亿参数的模型按 FP16 加载约需 14GB，上下文变长时 KV Cache 还会继续吃掉显存。\n\n它的痛点是又贵又不够用：显存容量直接决定能跑多大的模型、多长的 Context Window、多高的并发。不够时，要么用 Quantization 压缩模型，要么用 PagedAttention 精打细算，要么多卡分摊——整个推理优化领域，一半以上的技巧本质上都是显存经济学。",
+    "related": [
+      "GPU",
+      "KV Cache",
+      "Context Window",
+      "Quantization",
+      "GGUF",
+      "PagedAttention",
+      "Parameter"
+    ]
+  },
+  {
+    "abbr": "Context Window",
+    "ipa": "/ˈkɒntekst ˈwɪndəʊ/",
+    "detail": "上下文窗口指模型一次能看见的 Token 总量上限，包括输入的 Prompt 和生成的回答。它像一个人的短期工作台：台面上能摆多少材料，决定了他能同时参考多少信息。窗口是 32K，把一本十万字的小说塞进去，超出的部分模型根本看不到，就像没读过一样。\n\n在模型结构中，它受 Self-Attention 机制与训练时 Positional Encoding（如 RoPE）设计的制约：注意力计算量随长度平方增长，训练时见过的最大长度也限制了外推能力。推理时，窗口大小直接决定 VRAM 中要为 KV Cache 预留多少空间。\n\n它要解决的痛点是模型健忘：早期模型窗口只有 2K 到 4K，连一份长合同都读不完，更谈不上多轮长对话。从 4K 到 128K 再到百万级，窗口的扩展（配合 RAG 等技术）解锁了长文档分析、整仓代码问答等场景。但窗口不是免费的：越长越占显存、越拖慢速度，工程上仍需权衡。",
+    "related": [
+      "Token",
+      "Prompt",
+      "Self-Attention",
+      "Positional Encoding",
+      "RoPE",
+      "VRAM",
+      "KV Cache",
+      "RAG"
+    ]
+  },
+  {
+    "abbr": "Latency",
+    "ipa": "/ˈleɪtnsi/",
+    "detail": "延迟指从用户发出请求到收到响应所花的时间，在 LLM 场景通常细分为 TTFT（首 token 延迟）和后续每个 token 的间隔（TPOT），总延迟约等于 TTFT 加 TPOT 乘以生成长度。它像点外卖的等待时长：下单到第一口吃到嘴里的时间，直接决定你对这家店的好感。\n\n在推理指标体系中，它与 Throughput（吞吐）是衡量服务质量的两根支柱，往往此消彼长：用 Batching 攒大批次能提高吞吐，但每个请求的等待会变长；追求极致低延迟又可能浪费算力。\n\n它要回答的问题是用户要等多久：对话产品里几百毫秒的差距就能决定流畅还是卡顿，代码补全要求近乎即时，而批量翻译文档对延迟不敏感。因此延迟没有统一标准，只有场景标准——部署时先明确业务能容忍多少，再反推需要什么样的 GPU、推理引擎（vLLM、TensorRT-LLM）和参数配置。",
+    "related": [
+      "TTFT",
+      "TPOT",
+      "Throughput",
+      "Batching",
+      "Quantization",
+      "GPU"
+    ]
+  },
+  {
+    "abbr": "Throughput",
+    "ipa": "/ˈθruːpʊt/",
+    "detail": "吞吐指单位时间内系统处理的 Token 数或请求数，回答的是这台机器一秒钟能服务多少人。用餐厅比喻：Latency 是每桌客人等菜的时间，吞吐则是整个餐厅一晚上能接待多少桌。\n\n在推理服务指标体系中，它与 Latency 是一对永恒的张力：Continuous Batching 把更多请求塞进同一批计算，GPU 利用率上升、吞吐提高，但单请求的等待可能变长。PagedAttention、Flash Attention 等技术的价值，正在于尽量两头都占。\n\n它要解决的核心问题是成本：GPU 是按小时烧钱租来的，同样的硬件吞吐翻三倍，每次调用的算力成本就降到三分之一。对按 token 计费的 API 服务商，吞吐几乎直接等于毛利率；对自建服务的企业，吞吐决定要买多少卡。衡量时还要区分每秒输出 token 数与每秒处理 token 数，并用 TTFT、TPOT 配合观察，避免高吞吐下的体验劣化。",
+    "related": [
+      "Latency",
+      "Batching",
+      "PagedAttention",
+      "Flash Attention",
+      "GPU",
+      "TTFT",
+      "TPOT",
+      "API"
+    ]
+  },
+  {
+    "abbr": "TTFT",
+    "ipa": "/ˌtiː tiː ef ˈtiː/",
+    "detail": "TTFT 指从请求发出到收到第一个输出 Token 的耗时，是流式输出时代衡量响应快慢的首要指标。像打电话时的等待时长：拨号后到听到对方第一声喂的间隔，决定了你是否会不耐烦地挂断。\n\n在推理流程中，TTFT 几乎全部由 Prefill 阶段决定：模型要一次性处理完整个输入 Prompt（算力密集）才能产出第一个 Token，因此输入越长 TTFT 越高；之后进入 Decode Stage，每个 token 的间隔由 TPOT 刻画。\n\n它要回答的痛点是用户第一眼要等多久：聊天产品里 TTFT 若超过数秒，用户会怀疑系统死机。降低 TTFT 的手段包括更快的 GPU、Flash Attention、Prompt 缓存（重复的 System Prompt 前缀不用重算）等。它与 TPOT、Throughput 一起构成推理性能评估的完整画像。",
+    "related": [
+      "Streaming",
+      "TPOT",
+      "Prefill",
+      "Prompt",
+      "GPU",
+      "Flash Attention",
+      "System Prompt",
+      "Throughput"
+    ]
+  },
+  {
+    "abbr": "TPOT",
+    "ipa": "/ˌtiː piː əʊ ˈtiː/",
+    "detail": "TPOT 指生成阶段相邻两个输出 Token 之间的平均时间间隔，也就是流式输出中文字蹦出来的速度。如果说 TTFT 是电话接通前的等待，TPOT 就是对方说话的语速——间隔太大，读起来一顿一顿。\n\n在推理流程中，TPOT 由 Decode Stage 的效率决定：每生成一个 Token 都要跑一次完整的前向计算，主要瓶颈是把模型权重和不断增长的 KV Cache 从 VRAM 搬进计算单元的带宽，因此它被称为带宽受限阶段，与算力受限的 Prefill 形成对照。\n\n它要回答的问题是回答流得顺不顺：一般认为输出速度超过人类阅读速度（每秒十几到二十个 token）就足够流畅。优化手段包括 Quantized Inference（权重变小、搬运更快）、Speculative Decoding（一次确认多个 token）等。它与 TTFT 一起，把抽象的模型性能翻译成了用户可感知的流畅度。",
+    "related": [
+      "TTFT",
+      "Decode Stage",
+      "Prefill",
+      "Token",
+      "VRAM",
+      "KV Cache",
+      "Quantized Inference",
+      "Speculative Decoding"
+    ]
+  },
+  {
+    "abbr": "Prefill",
+    "ipa": "/priːˈfɪl/",
+    "detail": "Prefill 是 LLM 推理的第一个阶段：模型把整段输入 Prompt 一次性并行处理完，算出注意力结果并建立 KV Cache，然后产出第一个输出 Token。好比开会前的阅卷：把你给的材料一口气读完、做好笔记，才开口说话。\n\n在推理数据流中，它位于 TTFT 之前：输入经 Tokenization 后，所有 Token 同时通过 Transformer 各层——由于输入之间可以并行计算，这一阶段是算力受限的，GPU 满负荷运转。产出的 KV Cache 交给 Decode Stage 逐 token 复用。\n\n它要解决的问题是效率与缓存的奠基：如果没有 Prefill 的并行处理，让模型逐字读输入会慢得无法忍受；它建好的 KV Cache 则让后续生成不必重复计算历史上下文。长 Prompt 会推高 TTFT，于是有了 Prompt 缓存、与 Decode 分离部署等优化。",
+    "related": [
+      "Token",
+      "Prompt",
+      "KV Cache",
+      "Decode Stage",
+      "TTFT",
+      "Tokenization",
+      "Embedding",
+      "Transformer"
+    ]
+  },
+  {
+    "abbr": "Decode Stage",
+    "ipa": "/ˌdiːˈkəʊd steɪdʒ/",
+    "detail": "Decode Stage 是 LLM 推理的第二阶段：Prefill 读完输入、吐出第一个 Token 后，模型进入逐 token 自回归生成：每算出一个新 Token 就拼回上下文再算下一个，直到结束。像作家写作：资料看完，逐字往下写，每字都参考前文。\n\n它紧随 Prefill，耗时由 TPOT 刻画。与 Prefill 的算力密集不同，Decode 每步只处理一个 Token，瓶颈在于把模型权重和不断增长的 KV Cache 从 VRAM 搬入计算单元，属于带宽受限阶段。\n\n它是推理优化的主战场：逐 token 串行让 GPU 大量闲置，于是 Continuous Batching 合并多个请求的 decode 步，Speculative Decoding 一次验证多个草稿，Quantized Inference 减少权重搬运，都在给它提速，直接决定 Throughput 与成本。",
+    "related": [
+      "Prefill",
+      "Token",
+      "KV Cache",
+      "TPOT",
+      "VRAM",
+      "Batching",
+      "Speculative Decoding",
+      "Throughput"
+    ]
+  },
+  {
+    "abbr": "Batching",
+    "ipa": "/kənˈtɪnjuəs ˈbætʃɪŋ/",
+    "detail": "连续批处理是一种推理调度技术：不同请求不再需要同进同出地凑成固定一批，而是像地铁发车间隔制——每个计算步结束时，已完成的请求立刻下车，新到达的请求马上补位上车，车队始终满载运行。早期的静态批处理则像包车，必须等一车人凑齐才发车。\n\n它位于推理引擎的调度层，是 vLLM、TGI、TensorRT-LLM 等现代框架的标配，直接决定 Throughput。\n\n它要解决的痛点是 GPU 利用率低下：Decode Stage 逐 token 生成时单个请求喂不饱 GPU，而各请求长度不一，静态批处理里短回答要干等长回答，空转严重。连续批处理按步动态重组批次，让 GPU 尽量满载，可将吞吐提升数倍。代价是调度复杂（需配合 PagedAttention 管理 KV Cache），且批次越大单请求 Latency 越高。",
+    "related": [
+      "Decode Stage",
+      "GPU",
+      "Throughput",
+      "Latency",
+      "PagedAttention",
+      "vLLM",
+      "TGI",
+      "KV Cache"
+    ]
+  },
+  {
+    "abbr": "Quantized Inference",
+    "ipa": "/ˈkwɒntaɪzd ˈɪnfərəns/",
+    "detail": "量化推理指把模型权重从高精度（如 FP16 的 16 位浮点）压缩成低比特整数（如 8bit、4bit）再做推理。像把高清电影转成压缩视频：画质略有损失，但文件小了几倍，普通设备也能流畅播放。\n\n它作用于模型加载与计算的底层：权重量化后 VRAM 占用近乎按比例下降，Decode Stage 搬运权重的带宽压力减轻，TPOT 随之改善。常见方案有面向 GPU 的 GPTQ、AWQ 和面向 llama.cpp 生态的 GGUF 等，多属训练后量化，无需重新训练。\n\n它要解决的痛点是显存门槛与成本：FP16 的 70 亿参数模型要约 14GB 显存，量化到 4bit 只需约 4GB，消费级显卡甚至 MacBook 就能跑，这正是 Ollama 本地部署流行的技术基础。代价是精度损失——量化越狠，模型在复杂推理任务上越容易变笨，工程上常在 8bit（几乎无损）与 4bit（极省显存）之间权衡。",
+    "related": [
+      "GPTQ",
+      "AWQ",
+      "GGUF",
+      "VRAM",
+      "Decode Stage",
+      "TPOT",
+      "llama.cpp",
+      "Quantization"
+    ]
+  },
+  {
+    "abbr": "Deployment",
+    "ipa": "/dɪˈplɔɪmənt/",
+    "detail": "模型部署指把训练好的模型从研究环境搬到生产环境，变成稳定可调用的在线服务的过程。像餐厅从研发新菜到正式开店：菜谱（模型权重）研发出来只是开始，还要租店面、培训员工、设计点餐流程，才能持续接待客人。\n\n在 AI 项目生命周期中，它位于 Pre-training、SFT、RLHF 等训练环节之后，是模型真正创造商业价值的临门一脚。典型工作包括：选择推理引擎（vLLM、TGI、TensorRT-LLM 或端侧的 llama.cpp、Ollama）、规划 GPU 资源、配置 Batching 与 Quantization、暴露 API。\n\n它要解决的痛点是研究与生产的鸿沟：实验室里单条请求能跑通，不代表一万个并发用户下还能又快又稳又便宜。部署决定了模型的可用性、体验（TTFT、TPOT）与成本，同一模型部署水平的差异可以造成数倍成本差距，因此它是 AI 工程化中最重的环节之一。",
+    "related": [
+      "vLLM",
+      "TGI",
+      "TensorRT-LLM",
+      "Ollama",
+      "API",
+      "GPU",
+      "Latency",
+      "Throughput"
+    ]
+  },
+  {
+    "abbr": "API",
+    "ipa": "/ˌeɪ piː ˈaɪ/",
+    "detail": "API 是程序与程序之间的约定接口：你按固定格式发请求，它按固定格式回结果，中间的一切复杂性都被藏起来。像餐厅的点餐窗口——你不需要进后厨看厨师怎么炒菜，只需递上点菜单，窗口就会递出菜品。\n\n在 AI 应用架构中，API 是模型服务对外暴露的标准方式：vLLM、TGI 部署的本地服务通常兼容 OpenAI API 格式。一次典型调用包含模型名、Prompt、Temperature、是否开启 Streaming 等参数，返回生成的文本与 token 用量。\n\n它要解决的问题是解耦与复用：没有 API，每个想用 AI 的应用都得自己背着一个模型；有了 API，模型能力变成像水电一样的基础设施——前端 App、后端系统、办公插件都能用同一方式接入，模型升级换代时调用方无感。MCP、Function Calling 等 Agent 能力，也建立在 API 这套程序互相对话的基础之上。",
+    "related": [
+      "OpenAI API",
+      "vLLM",
+      "TGI",
+      "Streaming",
+      "Prompt",
+      "Temperature",
+      "MCP",
+      "Function Calling"
+    ]
+  },
+  {
+    "abbr": "ONNX",
+    "ipa": "/ˈɒnɪks/",
+    "detail": "ONNX 是由微软和 Meta 发起的开放模型交换格式，定义了与框架无关的计算图标准：PyTorch、TensorFlow 等框架训练出的模型，都可导出为 .onnx 文件，再由各家推理引擎执行。它像模型界的 PDF——不管原文用什么软件写的，转成 PDF 后谁都能打开。\n\n在 AI 工程链路中，它位于训练框架与推理部署之间的交换层：训练在 PyTorch 完成，部署目标可能是 Windows 应用、手机或专用加速卡，ONNX 配上 ONNX Runtime 让一次导出、处处运行成为可能，也是通往 TensorRT-LLM 等引擎的常见入口。\n\n它要解决的痛点是生态碎片化：早年各框架的模型格式互不兼容，换个部署环境就要重写导出逻辑，厂商锁定严重。ONNX 用统一标准打通任督二脉，让模型摆脱单一框架的束缚，自由选择最优推理后端。当然它并非万能：结构新颖的模型偶尔有算子不支持，需额外处理。",
+    "related": [
+      "Inference",
+      "Deployment",
+      "TensorRT-LLM",
+      "Parameter",
+      "GPU"
+    ]
+  }
+]

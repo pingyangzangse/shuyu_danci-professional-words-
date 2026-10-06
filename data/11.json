@@ -1,0 +1,506 @@
+[
+  {
+    "abbr": "RAG",
+    "ipa": "/ˌɑːr eɪ ˈdʒiː/",
+    "detail": "RAG 全称 Retrieval-Augmented Generation，检索增强生成。打个比方：普通大模型答题像闭卷考试，只能凭训练记忆硬答；RAG 像开卷考试，允许模型先去书架翻出相关资料摊在桌上再作答，答案更有依据、更少瞎编。\n\n在 AI 应用链路里，RAG 位于用户提问与 LLM 生成之间：问题先经 Embedding 转成向量，到 Vector Database 做 Embedding Retrieval，召回最相关的几段文档，再把文档连同问题拼进 Prompt 交给模型。它是企业知识问答的事实标准架构。\n\n它解决的痛点是：模型知识有截止日期、不懂内部资料，还容易一本正经胡说八道（Hallucination），重新训练又贵又慢。RAG 用外挂知识库让回答锚定真实资料（Grounding），更新知识只需换文档。少了它，企业大模型要么答不上来，要么编造答案，几乎无法落地。",
+    "related": [
+      "Embedding",
+      "Embedding Retrieval",
+      "Vector Database",
+      "LLM",
+      "Prompt",
+      "Hallucination",
+      "Grounding"
+    ]
+  },
+  {
+    "abbr": "Embedding Retrieval",
+    "ipa": "/ɪmˈbedɪŋ rɪˈtriːvl/",
+    "detail": "Embedding Retrieval 是基于嵌入向量的检索技术。它先把每段文字用 Embedding 模型压缩成一串数字（向量），这串数字就像文字的“口味坐标”：意思越近，坐标越近。找资料时不再比对关键词，而是计算问题坐标与文档坐标的距离，把最近的捞出来——就像不按菜名、而按口味相似度给你推荐菜。\n\n它位于 RAG 流程的检索环节：文档先切块、做 Embedding 存入 Vector Database，提问也转成向量，用余弦相似度等度量做最近邻搜索（常由 FAISS 这类引擎加速），召回的内容再交给 LLM 生成答案。\n\n它解决传统关键词搜索“认死理”的问题：搜“苹果”分不清水果和公司，换个说法就搜不到。Embedding Retrieval 按语义匹配，同义词、跨语言都能命中，是 Semantic Search 的底层能力。少了它，RAG 召回不准，模型拿到的都是无关资料，回答质量直接崩掉。",
+    "related": [
+      "Embedding",
+      "RAG",
+      "Vector Database",
+      "FAISS",
+      "Semantic Search",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Vector Database",
+    "ipa": "/ˈvektə(r) ˈdeɪtəbeɪs/",
+    "detail": "Vector Database 是专门存取向量（一长串数字）的数据库。传统数据库像按书名索书的图书馆，向量数据库则像一位懂内容的图书管理员：你给他一段文字，他能立刻找出“意思最像”的其他文字，哪怕用词完全不同。它内部用 ANN（近似最近邻）索引，在百万甚至上亿条向量里也能毫秒级找到最相似的几个。\n\n在 RAG 架构中，它处于存储与检索层：文档切块后做 Embedding 写入向量库，查询时按向量相似度召回，结果拼入 Prompt 交给 LLM。常见产品有 Milvus、Pinecone、Qdrant，轻量场景也常直接用 FAISS 这类检索库。\n\n它解决的痛点是：高维向量没法用普通数据库的索引，暴力两两比对在数据量大时慢到不可用。向量数据库用专门索引结构把搜索提速几个数量级，还支持持久化和增删改。少了它，RAG 系统要么检索慢得没法用，要么只能支持极小的知识库，企业级知识问答无从谈起。",
+    "related": [
+      "Embedding",
+      "RAG",
+      "FAISS",
+      "Embedding Retrieval",
+      "Semantic Search",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "FAISS",
+    "ipa": "/feɪs/",
+    "detail": "FAISS 全称 Facebook AI Similarity Search，是 Meta 开源的向量相似度检索库，常读作 face。它像一个超高速索引卡片柜：给它一张写着“口味坐标”的卡片，它能在几百万张卡片里瞬间翻出最像的几张。注意它是“库”不是完整数据库——只管算得快，不管权限和事务。\n\n在 RAG 技术栈里，FAISS 位于检索引擎层，是很多 Vector Database 和 Embedding Retrieval 方案的底层内核：文档 Embedding 后建索引，查询向量做最近邻搜索，毫秒返回。它支持多种索引和量化压缩，可在 GPU 上加速。\n\n它解决的问题是：向量一多，逐个算距离的暴力搜索慢到不可用。FAISS 用聚类、乘积量化等近似算法，以很小的精度损失把速度提升几个数量级，单机可检索亿级向量。少了这类引擎，语义检索只能停留在玩具规模，RAG 无法在真实业务里跑起来。",
+    "related": [
+      "Vector Database",
+      "Embedding",
+      "RAG",
+      "Embedding Retrieval",
+      "GPU"
+    ]
+  },
+  {
+    "abbr": "Agent",
+    "ipa": "/ˈeɪdʒənt/",
+    "detail": "Agent（智能体）是能自己想办法完成任务的 AI 系统。普通聊天机器人像接线员，你问一句它答一句；Agent 更像一位实习生：你交代一个目标，它自己拆解步骤、查资料、调工具、检查结果，发现走错了还会换路重试，直到办完。典型模式是 ReAct 式的“思考—行动—观察”循环。\n\n在 AI 应用体系里，Agent 位于 LLM 之上的应用形态层：以模型为大脑，加上规划、记忆和 Tool Use 能力（常经 Function Calling 或 MCP 接入工具），多个 Agent 可由 Orchestration 协同。它是 AI 从“对话”走向“干活”的关键一跃。\n\n它解决的问题是：真实任务往往不是一问一答，而是“帮我调研并写份报告”这种多步骤工作，纯靠 Prompt 一次生成立刻露馅。Agent 通过循环执行和工具接入，把语言智能变成行动力。少了它，LLM 只能纸上谈兵，无法真正替人完成工作。",
+    "related": [
+      "LLM",
+      "Tool Use",
+      "Function Calling",
+      "MCP",
+      "Orchestration",
+      "ReAct",
+      "Workflow",
+      "Prompt"
+    ]
+  },
+  {
+    "abbr": "MCP",
+    "ipa": "/ˌem siː ˈpiː/",
+    "detail": "MCP 全称 Model Context Protocol，模型上下文协议，由 Anthropic 于 2024 年提出。打个比方：之前每个 AI 应用接每个工具都要定制“专用充电线”；MCP 像 AI 界的 USB-C，定义统一插口标准——工具方按标准做一个 MCP Server，模型方（Client）插上就能用。\n\n它位于 AI 应用的连接层，处于 Agent/LLM 与外部工具、数据源之间：模型通过协议发现有哪些工具可用、各需什么参数，再发起调用并接收结构化结果。它与 Function Calling 分工明确：后者解决“怎么表达调用”，MCP 解决“工具能力怎么标准化暴露”。\n\n它解决的痛点是集成的 M×N 噩梦：M 个应用接 N 个工具要写 M 乘 N 套胶水代码。统一协议后，工具一次开发到处复用。少了它，Agent 生态会像没有 USB 年代的外设市场，各自为政，接入成本高、复用差。",
+    "related": [
+      "Agent",
+      "Function Calling",
+      "Tool Use",
+      "API",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Function Calling",
+    "ipa": "/ˈfʌŋkʃn ˈkɔːlɪŋ/",
+    "detail": "Function Calling（函数调用）是让模型以结构化格式“请求执行某个外部函数”的能力。关键要理解：模型本身并不会真的查天气、订机票，它只是像填申请表一样，按约定的 JSON 格式写出“请调用 get_weather，城市=北京”，真正的执行由外围程序完成，结果再喂回模型组织语言。\n\n它位于模型输出与外部世界之间的接口层：开发者在 API 请求里声明可用函数的签名，模型推理时判断是否需要调用并生成参数，应用代码执行后把结果回传，模型继续生成最终回答。它是 Tool Use 的主流实现方式，也是 Agent 能动手干活的基础。\n\n它解决的问题是：纯文本输出没法被程序可靠解析——让模型“顺便”报个数字，格式千奇百怪，程序根本没法接。Function Calling 用强约束的结构化输出打通模型与软件系统。少了它，LLM 永远只能聊天，无法查实时数据、操作业务系统，Agent 也无从谈起。",
+    "related": [
+      "Tool Use",
+      "Agent",
+      "API",
+      "Prompt",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Tool Use",
+    "ipa": "/tuːl juːz/",
+    "detail": "Tool Use（工具使用）指模型调用搜索引擎、计算器、代码解释器、数据库等外部工具来完成任务的能力。打个比方：一个聪明人再会心算，也不如给他一台计算器；Tool Use 就是给“只会说话”的大模型配上一套工具箱，让它算得准、查得新，还能操作真实系统。\n\n在 Agent 能力栈中，Tool Use 处于执行层：模型先规划要做什么，通过 Function Calling 发起结构化调用（工具也越来越多地经由 MCP 这类标准协议接入），拿到结果后观察、再决定下一步，形成“思考—调用—观察”的循环。\n\n它解决的痛点是模型的三个天生短板：知识有截止日期（用搜索补）、算术和复杂逻辑容易错（用代码执行补）、无法影响真实世界（用业务 API 补）。少了 Tool Use，LLM 的应用范围只剩“基于训练数据闲聊”，稍需要实时性或准确性的任务都会出错，AI 也无法从聊天玩具升级为生产力工具。",
+    "related": [
+      "Agent",
+      "Function Calling",
+      "MCP",
+      "API",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "Workflow",
+    "ipa": "/ˈwɜːkfləʊ/",
+    "detail": "Workflow（工作流）是把 AI 调用和业务逻辑按固定流程编排起来的执行链路。可以想成工厂流水线或菜谱：第一步做什么、什么条件走哪个分支，全都事先规定好，每个工位可能是一次 LLM 调用或一段普通代码，数据顺着流水线走一遍就变成成品。\n\n在 AI 应用架构里，Workflow 位于编排层，与 Agent 形成对照：Agent 让模型自主决定下一步，Workflow 则由开发者把路径写死，模型只负责局部环节（分类、摘要、抽取）。LangChain 等框架和低代码平台都提供编排能力，多条 Workflow 之上还可有 Orchestration 统一调度。\n\n它解决的问题是：真实业务要的是稳定可控，而纯 Agent 自主规划不确定性高、成本难估。Workflow 用确定性流程兜住可靠性。少了它，复杂业务只能寄希望于模型“一次想对”，出错无法定位，企业根本不敢上线。",
+    "related": [
+      "Agent",
+      "Orchestration",
+      "LangChain",
+      "LLM",
+      "Prompt"
+    ]
+  },
+  {
+    "abbr": "Orchestration",
+    "ipa": "/ˌɔːkɪˈstreɪʃn/",
+    "detail": "Orchestration（编排）指协调多个 Agent、多个步骤或多个模型协同完成复杂任务的调度艺术。想象交响乐团：每件乐器单独拉都能出声，但没有指挥就是噪音；Orchestration 就是那个指挥，决定谁先上谁后上、谁把结果交给谁、失败谁兜底重试。\n\n它位于多 Agent 系统的最上层：底层是具备 Tool Use 能力的各个 Agent，中间是 Workflow 定义的流程骨架，Orchestration 负责任务分派、上下文传递、并行串行控制、异常处理。常见模式有主从式（规划者带执行者）、流水线式和辩论式。\n\n它解决的问题是：单个 Agent 受 Context Window 和角色限制，面对“调研+分析+写报告”这类大任务力不从心，而简单堆多个 Agent 又会互相打架、信息丢失。编排让分工、交接和质控有序。少了它，多 Agent 系统就像没有项目经理的工地，人多反而误事。",
+    "related": [
+      "Agent",
+      "Workflow",
+      "Context Window",
+      "LLM",
+      "Tool Use"
+    ]
+  },
+  {
+    "abbr": "Multimodal",
+    "ipa": "/ˌmʌltiˈməʊdl/",
+    "detail": "Multimodal（多模态）指模型同时理解和生成多种信息形态——文字、图像、语音、视频——的能力。早期的语言模型像只读过书的“书呆子”，你给它看照片它两眼一抹黑；多模态模型则像五官齐全的人，既能看图说话，也能听音辨意，还能边听边看边推理。\n\n在模型结构上，多模态通常是在 Transformer 主干上加装各种“感官”：图像经视觉编码器转成 Embedding，与文本 Token 进入同一个表示空间（CLIP 证明了这种对齐可行），再统一做注意力计算；输出侧则接 Diffusion 等生成器产出图像或语音。VLM 是最典型的多模态形态。\n\n它解决的问题是：真实世界的信息本来就不止文字——病历有影像、工单有照片、会议有录音，纯文本模型对这些统统无能为力。多模态打通了感知通道，让 AI 能处理真实业务数据。少了它，AI 应用只能蜷缩在纯文字的一隅，大量场景无法覆盖。",
+    "related": [
+      "VLM",
+      "CLIP",
+      "LLM",
+      "Embedding",
+      "Transformer",
+      "Text-to-Image"
+    ]
+  },
+  {
+    "abbr": "VLM",
+    "ipa": "/ˌviː el ˈem/",
+    "detail": "VLM 全称 Vision-Language Model，视觉语言模型，是能同时看懂图像和文字的多模态模型。通俗地说，就是给 LLM 装上一双眼睛：你发一张冰箱内部的照片问“能做啥菜”，它真能认出里面的鸡蛋和西红柿再回答，而不是瞎猜。\n\n典型结构分三段：视觉编码器（常基于 CLIP 这类图文对齐预训练）把图片切块并转成一串视觉 Embedding，经过投影层对齐到语言空间，再和文字 Token 一起喂进 LLM 主干统一推理。它位于多模态模型家族的核心位置，支撑看图问答、文档理解、GUI 操作等应用。\n\n它解决的问题是：世界上大量信息以图像形式存在——图表、票据、截图、监控画面，纯文本模型一概读不懂，传统 OCR 只能搬字不理解。VLM 实现了“看懂”而不仅是“认出字”。少了它，AI 无法处理任何含图的真实业务。当然它也会看错细节，需警惕 Hallucination。",
+    "related": [
+      "Multimodal",
+      "LLM",
+      "CLIP",
+      "Transformer",
+      "Hallucination",
+      "Embedding"
+    ]
+  },
+  {
+    "abbr": "Diffusion",
+    "ipa": "/dɪˈfjuːʒn/",
+    "detail": "Diffusion（扩散模型）是当下主流的图像生成模型。工作原理可以打个比方：先学会怎么把一张清晰照片一步步撒沙子、撒成满屏雪花噪点（前向加噪），再反过来训练一个网络，学会从纯噪点里一点点“擦”出图像（反向去噪）。生成时就像雕塑家从一块噪声大理石里，一点点凿出藏在里面的雕像。\n\n在生成式 AI 版图里，Diffusion 位于图像与视频生成的核心位置：文本先由 CLIP 类编码器理解，作为条件引导去噪过程，最后解码成图。Stable Diffusion 把去噪放在压缩后的潜空间里做，大幅降低成本，成为开源生态的基石。\n\n它解决的痛点是：之前的 GAN 生成快但训练极不稳定、容易模式崩溃（翻来覆去只画几种图），自回归生成又太慢。Diffusion 训练稳定、质量高、多样性好，还能灵活加控制条件。少了它，Text-to-Image 不会达到今天的可用度，AI 绘画、设计辅助这些应用也就不存在了。",
+    "related": [
+      "Stable Diffusion",
+      "Text-to-Image",
+      "CLIP",
+      "Multimodal"
+    ]
+  },
+  {
+    "abbr": "Stable Diffusion",
+    "ipa": "/ˈsteɪbl dɪˈfjuːʒn/",
+    "detail": "Stable Diffusion 是 Stability AI 于 2022 年开源的文生图模型，是最著名的 Diffusion 模型。它的聪明之处是“先在草稿纸上作画”：不直接在像素上去噪，而是先把图像压缩成很小的潜空间表示，在“草稿空间”里扩散去噪，最后解码回高清大图，算力需求降低一个数量级，消费级显卡也能跑。\n\n在文生图技术栈里，它完整走一遍“文本编码（CLIP 类）→潜空间去噪→解码成图”的流程。由于权重代码完全开源，它成为开源 AI 绘画生态的地基：无数微调模型、LoRA 风格包、插件都建立在它之上，多托管在 Hugging Face。\n\n它解决的问题是：闭源文生图服务贵、有内容限制、不能私有部署也难定制。Stable Diffusion 让任何人都能本地生成、按自己数据 Fine-tuning 出专属画风。少了它，开源图像生成生态会冷清得多，设计、电商、游戏的大量应用也不会这么快普及。",
+    "related": [
+      "Diffusion",
+      "Text-to-Image",
+      "CLIP",
+      "Hugging Face",
+      "Fine-tuning",
+      "LoRA"
+    ]
+  },
+  {
+    "abbr": "CLIP",
+    "ipa": "/klɪp/",
+    "detail": "CLIP 全称 Contrastive Language-Image Pre-training，是 OpenAI 于 2021 年提出的图文对齐模型。训练方式像超大规模“连连看”：拿来约 4 亿对图文，让模型把相配的图片和文字在向量空间拉近、不配的推远。练成后，图片和文字进了同一个“语义坐标系”，可以直接比远近。\n\n在 AI 体系里，CLIP 是多模态的奠基组件：它让 Zero-shot 图像分类成为可能（不用专门训练就能按任意文字描述分类）；文生图里它充当理解文字的文本编码器；VLM 里常作视觉编码器的起点；图文互搜的 Embedding 检索也常用它。\n\n它解决的问题是：传统图像模型只能识别训练时固定的几百上千个类别，换个类别就要重新标注重训。CLIP 用文字描述无限扩展了识别能力，打通视觉和语言两个世界。少了它，多模态的发展会慢很多，文生图“听懂人话”也无从谈起。",
+    "related": [
+      "Multimodal",
+      "VLM",
+      "Embedding",
+      "Text-to-Image",
+      "Zero-shot",
+      "Transformer"
+    ]
+  },
+  {
+    "abbr": "Text-to-Image",
+    "ipa": "/ˈtekst tuː ˈɪmɪdʒ/",
+    "detail": "Text-to-Image（文生图）指根据文字描述自动生成图像的技术。你可以把它想象成一位随叫随到、画速飞快的画师：你说“一只穿宇航服的柴犬，油画风”，几十秒后画就摆在面前，不满意还能改描述重来，修改成本几乎为零。\n\n在技术流程上，主流方案分三步：先用 CLIP 类文本编码器把你的 Prompt 理解成向量，再由 Diffusion 类生成器以此为条件从噪声中逐步去噪“画”出图像，最后解码输出。Stable Diffusion 是开源代表，闭源的还有 DALL·E、Midjourney 等，是整个多模态生成版图中最成熟的方向。\n\n它解决的问题是：传统视觉内容生产要么请设计师（贵、慢），要么买图库（不一定有、容易撞图）。文生图把创意到成品的成本压缩到接近零，电商配图、广告创意、游戏原画、自媒体插图的生产方式都被重塑。少了它，这些行业仍要回到高成本的人工生产，AI 对内容产业的影响会小得多。",
+    "related": [
+      "Diffusion",
+      "Stable Diffusion",
+      "CLIP",
+      "Prompt",
+      "Multimodal"
+    ]
+  },
+  {
+    "abbr": "ASR",
+    "ipa": "/ˌeɪ es ˈɑː(r)/",
+    "detail": "ASR 全称 Automatic Speech Recognition，自动语音识别，就是把人说的话实时转成文字的技术。它像一位不知疲倦的速记员：你对着手机说话，它边听边把每个字敲出来，开会录音也能整理成文稿。现代 ASR 基于深度学习（如 Transformer 及其变体，OpenAI 的 Whisper 是知名开源代表），普通话识别率在安静场景已相当高。\n\n在 AI 应用链路里，ASR 位于语音交互的“入口”位置：语音先经 ASR 变成文字，文字交给 LLM 理解和生成回答，再由 TTS 把回答读出来，三者串成完整的语音对话闭环。语音助手、会议转写、实时字幕都站在它的肩膀上。\n\n它解决的问题是：打字慢，而且很多场景腾不出手（开车、做饭、工厂巡检），语音是最自然高效的输入方式，但机器必须先把声音变成可处理的文字。少了 ASR，一切语音应用都是空中楼阁，会议纪要要人肉整理，无障碍输入也无从谈起。",
+    "related": [
+      "TTS",
+      "LLM",
+      "Transformer",
+      "Multimodal"
+    ]
+  },
+  {
+    "abbr": "TTS",
+    "ipa": "/ˌtiː tiː ˈes/",
+    "detail": "TTS 全称 Text-to-Speech，语音合成，就是把文字变成自然语音的技术，与 ASR 正好相反。它像一位 24 小时待命的播音员：给它任何文字，立刻字正腔圆地念出来；现代神经 TTS 还能模仿特定人的音色、带上喜怒哀乐的感情，甚至用几秒钟的参考音频就能克隆声音。\n\n在 AI 应用链路里，TTS 位于语音交互的“出口”：ASR 把用户的话变成文字，LLM 生成文字回答，TTS 负责把回答“说”出来，完成语音对话的最后一环。有声书、导航播报、智能客服、视频配音都是它的典型落地场景。\n\n它解决的问题是：文字输出要求用户盯着屏幕看，很多场景（开车、视障人士、陪伴类产品）必须靠声音传递信息；请人录音又贵又慢，内容一改就要重录。TTS 让任何文字内容都能即时可听。少了它，语音助手只能打字回复，有声内容产业的成本会高出一个量级。",
+    "related": [
+      "ASR",
+      "LLM",
+      "Multimodal"
+    ]
+  },
+  {
+    "abbr": "Copilot",
+    "ipa": "/ˈkəʊpaɪlət/",
+    "detail": "Copilot（AI 副驾驶）是嵌入日常工作流程、随时提供辅助的 AI 助手。名字就说明定位：你依然是机长，掌握方向和最终决定权；它坐在副驾驶位，帮你查仪表、提建议、干杂活——写代码时自动补全（GitHub Copilot 是鼻祖），写文档时帮你起草，做表格时帮你写公式。\n\n在 AI 应用形态谱系里，Copilot 介于 Chatbot 与 Agent 之间：比聊天机器人更深地嵌入具体软件（IDE、Office），有上下文感知；又不像 Agent 那样自主跑完整任务，强调人机协作、人始终在环。底层通常是 LLM 加精心设计的 Prompt 与上下文注入。\n\n它解决的问题是：全自动 AI 还不够可靠，关键工作不敢放手；纯问答机器人又要来回切换窗口、复制粘贴，打断心流。Copilot 把 AI 织进工具本身，顺手得像软件的增强功能。少了它，AI 的使用摩擦大得多，普及也会慢得多。",
+    "related": [
+      "LLM",
+      "Agent",
+      "Prompt",
+      "Chatbot",
+      "Workflow"
+    ]
+  },
+  {
+    "abbr": "Chatbot",
+    "ipa": "/ˈtʃætbɒt/",
+    "detail": "Chatbot（聊天机器人）是以对话形式与人交互的 AI 应用，是大模型时代最普及的产品形态——ChatGPT、豆包都是。它像坐在对话框另一端的店员：你用自然语言提需求，它理解后回答，还能记住上下文多轮交谈。底层通常是 LLM 加 System Prompt 设定角色，企业场景常挂 RAG 接入私有知识。\n\n在 AI 应用体系里，Chatbot 是最基础的交互层：向上包装模型推理能力，向下可组合检索、Function Calling 等能力；更复杂的 Agent、Copilot 都可看作它的进化版。评价高下常用 Chatbot Arena 这类对战榜单。\n\n它解决的问题是：传统软件要学专业界面和菜单，搜索引擎要自己从十条结果里淘金。对话是最零门槛的交互，把“会用软件”降到“会说话”。少了它，大模型能力很难触达普通用户；但也要警惕 Hallucination，关键信息必须核实。",
+    "related": [
+      "LLM",
+      "Prompt",
+      "System Prompt",
+      "RAG",
+      "Hallucination",
+      "Chatbot Arena",
+      "Function Calling"
+    ]
+  },
+  {
+    "abbr": "Benchmark",
+    "ipa": "/ˈbentʃmɑːk/",
+    "detail": "Benchmark（基准测试）是评估 AI 模型能力的标准化考卷与评分方法，作用类似高考：不管哪个学校（厂商）培养的学生（模型），都做同一套题、按同一标准打分，分数才有可比性。没有它，每家都自称“史上最强”，用户根本无从判断。\n\n在 AI 研发流程里，Benchmark 处于评估环节：模型 Pre-training 和 Post-training 的每次迭代都要跑基准验证进步，企业选型也靠它初筛候选模型。常见基准有综合知识类的 MMLU、代码类的 HumanEval、中文类的 C-Eval，还有基于真人投票的 Chatbot Arena 作补充。\n\n它解决的问题是：模型能力是黑盒，只看参数量和宣传文案毫无意义。统一基准让研究可比较、进步可度量、选型有依据。少了它，整个行业会陷入自说自话。当然基准也有局限——题目可能泄漏进训练集（刷榜），高分不等于好用，真实场景评测同样重要。",
+    "related": [
+      "MMLU",
+      "HumanEval",
+      "C-Eval",
+      "Evaluation",
+      "Chatbot Arena",
+      "LLM"
+    ]
+  },
+  {
+    "abbr": "MMLU",
+    "ipa": "/ˌem em el ˈjuː/",
+    "detail": "MMLU 全称 Massive Multitask Language Understanding，大规模多任务语言理解基准，可以理解为大模型界的“综合高考”：从初高中知识到大学专业课程，涵盖数学、物理、历史、法律、医学等 57 个学科，全是选择题，考完算总分。MMLU 分数高，说明知识面广、综合能力强。\n\n在模型评估体系里，它是最常被引用的综合 Benchmark 之一：各大厂商发布新模型几乎必晒 MMLU 分数，它和 HumanEval（代码）、C-Eval（中文）等专项基准构成观察模型能力的多维坐标系，研究者也用它追踪 Scaling Law 下能力的增长。\n\n它解决的问题是：单一任务的测试看不出泛化能力，容易“偏科作弊”；MMLU 用跨 57 科的广度逼着模型全面发展，提供统一标尺。少了它，模型强弱只能各说各话。局限是选择题测不出真实生成质量，题目也可能被爬进训练集导致分数虚高。",
+    "related": [
+      "Benchmark",
+      "LLM",
+      "Evaluation",
+      "C-Eval",
+      "HumanEval",
+      "Scaling Law"
+    ]
+  },
+  {
+    "abbr": "HumanEval",
+    "ipa": "/ˈhjuːmən ɪˈvæl/",
+    "detail": "HumanEval 是 OpenAI 于 2021 年发布的代码生成评测基准，可以理解为程序员的“上机考试”：164 道手写 Python 编程题，给出函数签名和文档字符串，模型补全函数体；判分不看代码漂不漂亮，直接跑单元测试——能跑通才算对，与面试白板编程异曲同工。\n\n在模型评估体系里，它是衡量代码能力最经典的 Benchmark：从 GPT 到 LLaMA、DeepSeek，各家发布模型几乎都会报告 pass@1 成绩（一次生成即通过的比例）。它常与 MMLU 等知识类基准搭配，分别刻画模型的“动手能力”和“知识储备”。\n\n它解决的问题是：代码能力用选择题考不出来——语法背得熟不等于会写能跑的程序。HumanEval 用真实执行结果做判据，客观、可复现、无法粉饰。少了这类可执行评测，代码模型宣传会充满水分。局限是题量小、仅覆盖 Python 基础算法。",
+    "related": [
+      "Benchmark",
+      "Evaluation",
+      "LLM",
+      "GPT",
+      "LLaMA",
+      "DeepSeek"
+    ]
+  },
+  {
+    "abbr": "C-Eval",
+    "ipa": "/siː ɪˈvæl/",
+    "detail": "C-Eval 是面向中文大模型的知识与推理能力评测基准，可以理解为中文版的“高考+公务员+职业资格考试”大拼盘：一万多道选择题，覆盖初中、高中、大学、职业四个难度层级和 52 个学科，题目全部来自中文语境，专门检验模型在中国知识体系下的真实水平。\n\n在模型评估体系里，C-Eval 与英文的 MMLU 形成互补：MMLU 测的是英文世界知识，而中文模型实际服务的是中文用户，两者成绩经常倒挂。国产模型如 Qwen、DeepSeek 发布时都会报告 C-Eval 成绩，它是中文社区选型的重要参考。\n\n它解决的问题是：直接用英文基准评价中文模型不公平也不准确——翻译腔的题目测不出中文语义理解，英文知识背景也与中国用户关心的内容错位。C-Eval 提供了本土化的统一标尺，让中文模型的进步可度量、可比较。少了它，中文模型研发就缺少公认的方向盘，只能拿英文分数隔靴搔痒。",
+    "related": [
+      "Benchmark",
+      "MMLU",
+      "Evaluation",
+      "LLM",
+      "Qwen",
+      "DeepSeek"
+    ]
+  },
+  {
+    "abbr": "LLaMA",
+    "ipa": "/ˈlɑːmə/",
+    "detail": "LLaMA 全称 Large Language Model Meta AI，是 Meta 于 2023 年起开源的大语言模型系列（已迭代到 Llama 3、4）。打个比方：在大模型被少数闭源巨头垄断的年代，LLaMA 像一台公开发动机图纸的引擎，全世界开发者都能拿去改装，一夜之间催生了庞大的开源微调生态。\n\n在大模型版图中，LLaMA 是开源旗手：技术上是标准 Decoder-only Transformer，靠高质量数据以小博大；生态上是事实标准，无数微调变体、GGUF 量化版、部署工具围绕它构建，多托管在 Hugging Face。Qwen、Mistral 延续了这条路线。\n\n它解决的问题是：闭源模型不让研究、不能私有部署、成本受制于厂商，学术界和中小企业被挡在门外。LLaMA 把大模型能力“平民化”，让 Fine-tuning、本地部署成为可能。少了它，开源大模型运动要晚好几年。",
+    "related": [
+      "LLM",
+      "Transformer",
+      "Fine-tuning",
+      "Hugging Face",
+      "Qwen",
+      "Mistral",
+      "GGUF",
+      "Quantization"
+    ]
+  },
+  {
+    "abbr": "Qwen",
+    "ipa": "/kwen/",
+    "detail": "Qwen（通义千问）是阿里巴巴开源的大语言模型系列，是国产开源模型中的“全能选手”：从小到大各种参数规格一应俱全，还有专攻代码、数学、多模态的衍生版本，中文能力长期处于开源第一梯队，在海外开发者社区也很受欢迎。\n\n在大模型版图中，Qwen 与 Meta 的 LLaMA 构成开源生态的两极：采用主流的 Decoder-only Transformer 架构，在 Hugging Face 提供完整权重，配套微调、量化（GGUF）和部署工具链，企业和个人都能低成本私有部署，C-Eval 等中文评测表现突出。\n\n它解决的问题是：中文场景长期缺少既强又开放还能商用的基础模型——LLaMA 中文偏弱且许可证有限制，闭源国产模型又无法私有化和二次开发。Qwen 用宽松的开源协议和全尺寸覆盖填补空档，让中国企业做 AI 应用有了自主可控的底座。少了它，中文开源生态的选择会单薄得多。",
+    "related": [
+      "LLM",
+      "LLaMA",
+      "Hugging Face",
+      "Fine-tuning",
+      "C-Eval",
+      "GGUF",
+      "Transformer"
+    ]
+  },
+  {
+    "abbr": "DeepSeek",
+    "ipa": "/ˈdiːpsiːk/",
+    "detail": "DeepSeek（深度求索）是中国团队研发的开源大模型系列，代表作有 DeepSeek-V3 和推理模型 DeepSeek-R1。它最出圈的成就是“花小钱办大事”：以远低于行业惯例的训练成本做出比肩顶级闭源模型的性能，2025 年初 R1 发布时引发全球科技圈震动，被视为开源对闭源的一次里程碑式追赶。\n\n技术上，V3 采用 MoE（混合专家）架构和 MLA 注意力压缩技术，推理成本很低；R1 证明仅靠 RL（用 GRPO 算法）就能激发强大推理能力，其路线还可经 Distillation 迁移到小模型。权重在 Hugging Face 开源，API 价格极具攻击性。\n\n它解决的问题是：大模型训练曾被认为是大厂烧钱的游戏，后来者没有入场券。DeepSeek 用架构与算法创新证明效率可以弥补资源差距，并把成果开源。少了它，“算力军备竞赛是唯一道路”的迷思难被打破，开源社区也缺少顶级推理模型底座。",
+    "related": [
+      "LLM",
+      "MoE",
+      "MLA",
+      "RL",
+      "GRPO",
+      "Distillation",
+      "Hugging Face"
+    ]
+  },
+  {
+    "abbr": "Mistral",
+    "ipa": "/ˈmɪstrəl/",
+    "detail": "Mistral 指法国 Mistral AI 公司开源的语言模型系列，是欧洲大模型的旗帜。它的风格像一辆“小钢炮”：车身不大性能凶猛——7B 小模型当年就能越级挑战大它数倍的对手，后续采用 MoE 架构的 Mixtral 系列又用稀疏激活在成本和性能之间取得漂亮平衡。\n\n在大模型版图中，Mistral 走“高效开源”路线：权重以宽松协议发布在 Hugging Face，与 LLaMA、Qwen 并称开源三强，同时提供商业 API。它的技术探索（滑动窗口注意力、MoE 的成熟运用）影响了整个行业对模型效率的追求。\n\n它解决的问题是：大模型不等于好模型，很多业务场景需要的是部署得起、延迟够低的中小模型（SLM 方向），而不是动辄几千亿参数的巨兽。Mistral 证明精巧的架构设计能用更少参数达到更好效果，为边缘部署和成本敏感场景提供优质选择。少了它，开源生态在“小而强”这个维度会失色不少。",
+    "related": [
+      "LLM",
+      "MoE",
+      "LLaMA",
+      "Hugging Face",
+      "SLM",
+      "Qwen"
+    ]
+  },
+  {
+    "abbr": "Gemma",
+    "ipa": "/ˈdʒemə/",
+    "detail": "Gemma 是 Google 于 2024 年起发布的开源模型系列，可以理解为 Google 把自家王牌 Gemini 的技术“下放”做成的轻量公开版：与 Gemini 同源的技术和训练配方，但参数规模小、单卡可跑，个人开发者和研究者也能轻松上手。\n\n在大模型版图中，Gemma 卡位在“小而精”的开源区间：几 B 到几十 B 的尺寸覆盖端侧到服务器场景，权重发布在 Hugging Face 等平台，与 LLaMA、Qwen、Mistral 同场竞技。Google 还配套提供负责任 AI 工具包，强调安全使用。\n\n它解决的问题是：前沿大模型越来越强但也越来越重，手机、笔记本、单卡工作站这些算力有限的场景被甩在后面，而小模型往往能力堪忧。Gemma 用旗舰模型的技术反哺小尺寸，让 SLM 也有不错的质量，支撑本地部署、隐私敏感的端侧 AI 应用。少了这类大厂背书的开源小模型，端侧智能的底座会薄弱许多。",
+    "related": [
+      "LLM",
+      "SLM",
+      "Hugging Face",
+      "LLaMA",
+      "Qwen",
+      "Mistral"
+    ]
+  },
+  {
+    "abbr": "Hugging Face",
+    "ipa": "/ˈhʌɡɪŋ feɪs/",
+    "detail": "Hugging Face 是全球最大的开源 AI 模型与数据集社区平台，绰号“AI 界的 GitHub”。打个比方：过去找模型要翻遍论文附录和个人网盘，它把这一切变成井井有条的应用商店——上百万模型和数据集明码陈列、附说明卡片，一行命令下载，还能在线试用。\n\n在 AI 生态里它是基础设施层的枢纽：LLaMA、Qwen、DeepSeek、Mistral、Gemma 等开源模型都首发于此；Transformers 库统一各家模型的加载调用，Datasets 托管数据，Spaces 托管演示，从 Fine-tuning 到 Deployment 全流程都有工具。\n\n它解决的问题是：开源生态曾碎片化——模型散落各处、格式五花八门，复现一篇论文要折腾一周环境。Hugging Face 用统一托管、格式和工具链把社区粘合起来，极大降低了使用与协作门槛。少了它，开源大模型运动不会发展这么快。",
+    "related": [
+      "LLM",
+      "Transformer",
+      "Fine-tuning",
+      "Quantization",
+      "GGUF",
+      "Deployment",
+      "LLaMA"
+    ]
+  },
+  {
+    "abbr": "OpenAI API",
+    "ipa": "/ˈəʊpən eɪ aɪ ˌeɪ piː ˈaɪ/",
+    "detail": "OpenAI API 是 OpenAI 提供的模型调用接口：不用自己买 GPU、训模型，注册账号拿密钥、按量付费，就能通过 HTTP 请求调用 GPT 系列模型。它像自来水厂——模型能力是“水”，你拧开水龙头（发请求）就有水来，不用关心背后的净水厂怎么运转。\n\n在 AI 应用架构里它处于模型接入层，并已成事实标准：其接口格式（messages 数组、Function Calling 写法）被大量第三方模型和推理框架（vLLM 等）兼容，换个 base_url 就能切换到 DeepSeek 等开源模型，LangChain 等框架也默认围绕它设计。\n\n它解决的问题是：2020 年前后想用大模型必须自己复现论文、买卡部署，门槛高到只有大厂玩得起。API 模式把模型能力商品化，几十行代码就能做出 AI 应用。少了它，这轮 AI 创业爆发会晚上好几年。代价是数据要出域、成本随用量增长。",
+    "related": [
+      "API",
+      "LLM",
+      "GPT",
+      "Function Calling",
+      "LangChain",
+      "vLLM",
+      "DeepSeek"
+    ]
+  },
+  {
+    "abbr": "Fine-tuning Platform",
+    "ipa": "/ˈfaɪn tjuːnɪŋ ˈplætfɔːm/",
+    "detail": "Fine-tuning Platform（微调平台）是提供低门槛模型微调训练的云服务。传统微调像自己开改装厂：买 GPU、搭训练环境、写脚本、调超参数，全是重活；微调平台则像自助改装店——你上传整理好的训练数据（如问答对），在网页上选基础模型和方法（通常是 LoRA 等省显存方案），点“开始”，练完直接给可部署的模型。\n\n在 AI 应用流程里，它位于训练基础设施层，服务 Post-training 阶段：当 Prompt Engineering 和 RAG 满足不了业务对风格、格式、领域知识的要求时，SFT 微调是下一步，平台把这步门槛从“算法团队”降到“业务团队”。各大云厂商都提供此类服务。\n\n它解决的问题是：中小企业有数据、有定制需求，但没有 ML 工程能力，自建训练管线的成本远超收益。平台化让微调像点外卖一样简单。少了它，微调只能是大公司的专利，大量垂直场景的定制模型根本不会诞生。",
+    "related": [
+      "Fine-tuning",
+      "LoRA",
+      "SFT",
+      "LLM",
+      "GPU",
+      "Post-training",
+      "RAG"
+    ]
+  },
+  {
+    "abbr": "LangChain",
+    "ipa": "/ˈlæŋtʃeɪn/",
+    "detail": "LangChain 是最流行的 LLM 应用开发框架之一。直接调模型 API 像裸写汇编，LangChain 像一盒预制乐高：Prompt Template、模型调用、输出解析、Embedding Retrieval、Vector Database 接入、Agent 与 Tool Use，每块积木能单独用，也能“链”起来拼成完整应用——名字由此而来。\n\n在 AI 技术栈里它处于应用开发框架层，介于裸 API 与最终产品之间：向下封装 OpenAI API 及各开源模型的差异，向上提供 RAG、Workflow、多步 Agent 的常用模式。齐名的还有专注数据接入的 LlamaIndex。\n\n它解决的问题是：从零搭建带检索、记忆、工具调用的应用，要写大量重复胶水代码，各家模型接口不一、换模型就要重写。LangChain 把通用能力标准化组件化，让开发者专注业务。少了这类框架，每个团队都重复造轮子。",
+    "related": [
+      "LLM",
+      "Agent",
+      "RAG",
+      "Prompt Template",
+      "Tool Use",
+      "Workflow",
+      "LlamaIndex",
+      "Embedding Retrieval"
+    ]
+  },
+  {
+    "abbr": "LlamaIndex",
+    "ipa": "/ˈlɑːmə ˈɪndeks/",
+    "detail": "LlamaIndex 是专注“给大模型喂数据”的 LLM 应用框架。打个比方：LangChain 是全能瑞士军刀，LlamaIndex 就是专为 RAG 打造的厨刀——把“接入各种数据源（PDF、网页、数据库）→切块→做 Embedding→建索引→检索召回→交给模型生成”这条流水线做成开箱即用的组件。\n\n在 RAG 技术栈里它位于数据接入与索引层：内置上百种数据连接器，支持向量索引（对接各类 Vector Database）、树索引、关键词索引等结构，还吸收重排序等前沿检索技术。常与 LangChain 搭配，也常单独支撑企业知识库。\n\n它解决的问题是：企业数据格式杂、体量大、更新频繁，如何高效准确地接入模型上下文，是 RAG 落地最脏最累也最关键的环节——检索质量直接决定回答质量。LlamaIndex 把最佳实践产品化。少了它，每个团队都要从头趟坑，知识库应用的周期和效果都会大打折扣。",
+    "related": [
+      "RAG",
+      "Vector Database",
+      "Embedding",
+      "LangChain",
+      "LLM",
+      "Embedding Retrieval"
+    ]
+  },
+  {
+    "abbr": "Prompt Template",
+    "ipa": "/prɒmpt ˈtempleɪt/",
+    "detail": "Prompt Template（提示词模板）是带占位符的可复用提示结构。可以把它想成公文模板：固定部分（角色设定、任务说明、输出格式要求）一次写好，变化的部分留成空槽（如{产品名}、{用户问题}），运行时填进去就生成完整 Prompt，比每次手写拼接字符串规范得多。\n\n在 Prompt Engineering 的工程实践里，它是基础构件：LangChain 等框架把模板作为一等公民，支持变量注入、Few-shot 示例的动态插入、与 System Prompt 的组合；模板可以版本管理、AB 测试、团队共享，让提示词从“玄学手工艺品”变成可维护的工程资产。\n\n它解决的问题是：在代码里用字符串拼 Prompt，可读性差、易出错、难复用，改需求时要大海捞针地找提示词，好提示也没法跨场景复用。模板化让提示词与代码解耦，运营也能维护。少了它，稍大应用的提示词管理会迅速失控。",
+    "related": [
+      "Prompt",
+      "Prompt Engineering",
+      "LangChain",
+      "Few-shot",
+      "System Prompt"
+    ]
+  },
+  {
+    "abbr": "Semantic Search",
+    "ipa": "/sɪˈmæntɪk sɜːtʃ/",
+    "detail": "Semantic Search（语义搜索）是按“意思”而非“字面关键词”检索的技术。传统搜索像死板的图书管理员：你问“怎么省钱”，他只找带“省钱”二字的书；语义搜索像懂行的朋友，会把《节俭生活妙招》《家庭理财入门》一起找给你，因为意思相近，哪怕一个词都没对上。\n\n技术上它是 Embedding Retrieval 的产品化：文档经 Embedding 转成向量存入 Vector Database（底层常用 FAISS 加速），查询同样向量化后按相似度召回。它是 RAG 的检索心脏，也是企业搜索、电商搜索、智能客服知识库的标配。\n\n它解决的问题是：关键词匹配不懂同义词、一词多义和跨语言表达，换个说法就搜不到。语义搜索大幅提升召回相关性和容错性。少了它，搜索退回“猜关键词”时代，RAG 也会因检索不到对的资料而答非所问。",
+    "related": [
+      "Embedding",
+      "Embedding Retrieval",
+      "Vector Database",
+      "RAG",
+      "FAISS"
+    ]
+  },
+  {
+    "abbr": "Chatbot Arena",
+    "ipa": "/ˈtʃætbɒt əˈriːnə/",
+    "detail": "Chatbot Arena（由 LMSYS 发起）是用真人盲测给大模型排名的开放平台，玩法像蒙面歌手擂台：用户随便提个问题，两个匿名模型同时作答，用户投票选更好的那个，投完才揭晓名字。成千上万场这样的对战用 Elo 算法（源自国际象棋排名）换算成积分，排出总榜。\n\n在模型评估体系里，它与 MMLU、HumanEval 等静态 Benchmark 形成关键互补：静态基准题目固定，可能被刷进训练集（数据污染），而 Arena 的对战题来自真实用户、实时产生，无法预演，因此被视为最接近“真实使用体验”的排行榜。新模型发布前常匿名上场试水。\n\n它解决的问题是：传统基准高分不等于好用——有的模型考试分数漂亮，真聊起来却答非所问。Arena 用大规模真人偏好投票度量“好用”本身。少了它，公众缺少一个难以操纵的口碑参照系，厂商的跑分宣传会少一层制衡。它的局限是偏好偏主观，简单讨喜的回答可能占便宜。",
+    "related": [
+      "Benchmark",
+      "LLM",
+      "Evaluation",
+      "Chatbot",
+      "MMLU",
+      "HumanEval"
+    ]
+  },
+  {
+    "abbr": "Grounding",
+    "ipa": "/ˈɡraʊndɪŋ/",
+    "detail": "Grounding（接地）是让模型的回答锚定到真实、可核查的资料来源上，而非凭“脑内记忆”自由发挥。词借自电气工程：电器接地防漏电，回答“接地”防信口开河。做法是：生成前先检索权威文档，要求模型只依据资料作答，最好标注出处，方便溯源核实。\n\n在 RAG 架构中，Grounding 是生成阶段的核心约束：Embedding Retrieval 负责把对的资料找对，Grounding 负责让模型老实基于资料说话——通常靠 Prompt 指令（“仅根据以下资料回答，没有就说不知道”）和引用标注实现，是联网搜索式助手的基本功。\n\n它解决的问题是 Hallucination（幻觉）：模型永远倾向于给出流畅答案，哪怕内容是编的，在医疗、法律、金融场景足以造成实际损失。Grounding 把回答的可信度从“模型自觉”变成“有据可查”。少了它，AI 在严肃场景的回答永远要全文人工复核，实用价值大打折扣。",
+    "related": [
+      "RAG",
+      "Hallucination",
+      "LLM",
+      "Embedding Retrieval",
+      "Prompt"
+    ]
+  },
+  {
+    "abbr": "Fine-tuning",
+    "ipa": "/ˈfaɪn tjuːnɪŋ/",
+    "detail": "Fine-tuning（微调）是在预训练模型基础上，用特定领域数据继续训练，让模型“转专业”。预训练模型像刚毕业的通才大学生：知识渊博但不懂你们公司的行话和文风；微调就是岗前培训——不用重读四年大学，针对性强化一阵就能上手。\n\n在训练流程里，它位于 Pre-training（通识教育）之后的 Post-training 阶段：常见方法有全量微调和 PEFT 参数高效微调（LoRA 等只调一小部分参数，省显存）；面向指令遵循的叫 SFT，之后还有 RLHF、DPO 等偏好对齐，可经 Fine-tuning Platform 完成。\n\n它解决的问题是：通用模型在专业场景不够“懂行”，靠 Prompt 硬约束又费 Token 又不稳定，微调把领域知识固化进权重。少了它，每个请求都要塞冗长背景，效果成本都差。但要小心 Catastrophic Forgetting（学新忘旧）和 Overfitting。",
+    "related": [
+      "Pre-training",
+      "Post-training",
+      "SFT",
+      "LoRA",
+      "PEFT",
+      "LLM",
+      "Catastrophic Forgetting",
+      "Overfitting"
+    ]
+  }
+]
