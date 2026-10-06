@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>术语闪卡</title>
+<style>
+  :root {
+    --bg:#f4f8f6; --card:#ffffff; --accent:#3aa88f; --accent-soft:#e3f3ee;
+    --good:#3aa88f; --good-soft:#e3f3ee; --bad:#e0885e; --bad-soft:#fceee5;
+    --text:#2e3a38; --dim:#8ba39d; --line:#e2ece8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+         min-height:100vh; display:flex; flex-direction:column; max-width:520px; margin:0 auto; padding:0 16px; }
+
+  header { padding:20px 0 6px; text-align:center; }
+  h1 { font-size:20px; font-weight:600; letter-spacing:2px; }
+  .stats { font-size:12px; color:var(--dim); margin-top:6px; }
+  .stats b { color:var(--accent); font-weight:600; }
+  .progress { height:4px; background:var(--line); border-radius:2px; margin-top:10px; overflow:hidden; }
+  .progress i { display:block; height:100%; background:var(--accent); border-radius:2px; transition:width .3s; }
+
+  /* 顶部视图切换 */
+  .tabs { display:flex; background:var(--accent-soft); border-radius:12px; padding:4px; margin:12px 0 4px; }
+  .tab { flex:1; text-align:center; padding:9px 0; font-size:14px; border-radius:9px; cursor:pointer;
+         color:var(--accent); user-select:none; transition:all .2s; }
+  .tab.active { background:#fff; color:var(--text); font-weight:600; box-shadow:0 2px 8px rgba(58,168,143,.15); }
+
+  .controls { display:flex; gap:8px; padding:10px 0; flex-wrap:wrap; }
+  select, .toggle, .search { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px;
+                    padding:8px 10px; font-size:13px; outline:none; }
+  select { flex:1; min-width:0; }
+  .search { width:100%; }
+  .toggle { cursor:pointer; text-align:center; user-select:none; flex:1; }
+  .toggle.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:600; }
+
+  /* ===== 闪卡视图 ===== */
+  .card-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:6px 0; perspective:1000px; }
+  .card { width:100%; min-height:340px; position:relative; cursor:pointer;
+          transform-style:preserve-3d; transition:transform .45s; }
+  .card.flipped { transform:rotateY(180deg); }
+  .face { position:absolute; inset:0; background:var(--card); border:1px solid var(--line); border-radius:20px;
+          box-shadow:0 10px 34px rgba(58,168,143,.10);
+          backface-visibility:hidden; -webkit-backface-visibility:hidden;
+          display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 22px; text-align:center; }
+  .face.back { transform:rotateY(180deg); }
+  .tag { position:absolute; top:14px; left:16px; font-size:11px; color:var(--dim); }
+  .badge { position:absolute; top:14px; right:16px; font-size:11px; padding:3px 10px; border-radius:20px; display:none; }
+  .badge.known { display:block; color:var(--good); background:var(--good-soft); }
+  .badge.unfamiliar { display:block; color:var(--bad); background:var(--bad-soft); }
+  .abbr { font-size:42px; font-weight:700; letter-spacing:1px; color:var(--accent); word-break:break-word; }
+  .hint { position:absolute; bottom:16px; font-size:12px; color:var(--dim); }
+  .full { font-size:21px; font-weight:600; color:var(--text); line-height:1.4; margin-bottom:16px; word-break:break-word; }
+  .meaning { font-size:14.5px; line-height:1.8; color:#5a6b66; }
+
+  .buttons { display:grid; grid-template-columns:1fr 1.5fr 1.5fr 1fr; gap:8px; padding:10px 0 26px; }
+  .btn { border-radius:14px; padding:14px 0; font-size:15px; font-weight:600; cursor:pointer;
+         background:var(--card); color:var(--text); border:1px solid var(--line); }
+  .btn:active { opacity:.7; }
+  .btn.good { background:var(--good); color:#fff; border-color:var(--good); }
+  .btn.bad { background:var(--bad); color:#fff; border-color:var(--bad); }
+
+  /* ===== 词表视图 ===== */
+  .list-wrap { flex:1; overflow-y:auto; padding-bottom:24px; }
+  .row { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 15px; margin-bottom:8px;
+         display:flex; gap:12px; align-items:flex-start; }
+  .dot { width:9px; height:9px; border-radius:50%; margin-top:6px; flex-shrink:0; background:var(--line); }
+  .dot.known { background:var(--good); }
+  .dot.unfamiliar { background:var(--bad); }
+  .row-main { flex:1; min-width:0; }
+  .row-head { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  .row-abbr { font-weight:700; color:var(--accent); font-size:15px; }
+  .row-full { font-size:13px; color:var(--text); }
+  .row-meaning { font-size:12.5px; color:var(--dim); line-height:1.6; margin-top:4px; }
+  .row-cat { font-size:11px; color:var(--dim); background:var(--accent-soft); padding:2px 8px; border-radius:10px;
+             flex-shrink:0; white-space:nowrap; }
+  .empty { text-align:center; color:var(--dim); padding:60px 0; font-size:14px; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>术语闪卡</h1>
+  <div class="stats" id="stats"></div>
+  <div class="progress"><i id="bar"></i></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tabFlash">闪卡模式</div>
+  <div class="tab" id="tabList">全部词表</div>
+</div>
+
+<!-- 闪卡视图 -->
+<div id="viewFlash" style="display:flex;flex-direction:column;flex:1;">
+  <div class="controls">
+    <select id="domainSel">
+      <option value="">全部领域</option>
+      <option value="制造">制造</option>
+      <option value="AI">AI</option>
+    </select>
+    <select id="catSel"><option value="">全部小类</option></select>
+    <div class="toggle" id="shuffleBtn">随机</div>
+    <div class="toggle" id="unfamiliarBtn">只看不熟</div>
+  </div>
+  <div class="card-wrap">
+    <div class="card" id="card">
+      <div class="face front">
+        <span class="tag" id="tagF"></span>
+        <span class="badge" id="badgeF"></span>
+        <div class="abbr" id="abbr"></div>
+        <span class="hint">点击卡片查看全称与释义</span>
+      </div>
+      <div class="face back">
+        <span class="tag" id="tagB"></span>
+        <div class="full" id="full"></div>
+        <div class="meaning" id="meaning"></div>
+      </div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="btn" id="prev">‹</button>
+    <button class="btn bad" id="markUnfamiliar">还不熟</button>
+    <button class="btn good" id="markKnown">已掌握</button>
+    <button class="btn" id="next">›</button>
+  </div>
+</div>
+
+<!-- 词表视图 -->
+<div id="viewList" class="hidden" style="display:flex;flex-direction:column;flex:1;">
+  <div class="controls">
+    <input class="search" id="search" placeholder="搜索缩写 / 全称 / 中文释义">
+    <select id="listDomainSel">
+      <option value="">全部领域</option>
+      <option value="制造">制造</option>
+      <option value="AI">AI</option>
+    </select>
+    <div class="toggle" id="listKnownOnly">只看已掌握</div>
+    <div class="toggle" id="listUnfOnly">只看不熟</div>
+  </div>
+  <div class="list-wrap" id="list"></div>
+</div>
+
+<script>
+const TERMS = /*__DATA__*/[];
+const key = t => t.abbr + t.full;
+const $ = id => document.getElementById(id);
+const store = {
+  get known() { return new Set(JSON.parse(localStorage.getItem("fc_known") || "[]")); },
+  set known(s) { localStorage.setItem("fc_known", JSON.stringify([...s])); },
+  get unfamiliar() { return new Set(JSON.parse(localStorage.getItem("fc_unfamiliar") || "[]")); },
+  set unfamiliar(s) { localStorage.setItem("fc_unfamiliar", JSON.stringify([...s])); }
+};
+
+let shuffle = localStorage.getItem("fc_shuffle") === "1";
+let onlyUnfamiliar = localStorage.getItem("fc_onlyunf") === "1";
+let deck = [], idx = 0;
+
+/* ---------- 闪卡视图 ---------- */
+function buildDeck() {
+  const d = $("domainSel").value, c = $("catSel").value;
+  const unf = store.unfamiliar;
+  deck = TERMS.filter(t =>
+    (!d || t.domain === d) && (!c || t.category === c) &&
+    (!onlyUnfamiliar || unf.has(key(t))));
+  if (shuffle) {
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+  }
+  idx = Math.min(idx, Math.max(deck.length - 1, 0));
+  renderCard();
+}
+
+function statusOf(t) {
+  if (store.known.has(key(t))) return "known";
+  if (store.unfamiliar.has(key(t))) return "unfamiliar";
+  return "";
+}
+
+function renderCard() {
+  $("card").classList.remove("flipped");
+  const badge = $("badgeF");
+  if (!deck.length) {
+    $("abbr").textContent = "—"; $("full").textContent = ""; $("meaning").textContent = "";
+    $("tagF").textContent = ""; $("tagB").textContent = "";
+    badge.className = "badge"; badge.textContent = "";
+    $("stats").innerHTML = "当前筛选下没有卡片（若开了「只看不熟」，说明全部掌握啦）";
+    $("bar").style.width = "0%";
+    return;
+  }
+  const t = deck[idx];
+  $("abbr").textContent = t.abbr;
+  $("full").textContent = t.full;
+  $("meaning").textContent = t.meaning;
+  $("tagF").textContent = $("tagB").textContent = t.domain + " · " + t.category;
+  const st = statusOf(t);
+  badge.className = "badge" + (st ? " " + st : "");
+  badge.textContent = st === "known" ? "已掌握" : st === "unfamiliar" ? "还不熟" : "";
+  const k = store.known;
+  const knownInDeck = deck.filter(x => k.has(key(x))).length;
+  $("stats").innerHTML = "第 <b>" + (idx + 1) + "</b> / " + deck.length + " 张 · 已掌握 <b>" + knownInDeck + "</b> 张 · 词库共 " + TERMS.length + " 条";
+  $("bar").style.width = ((idx + 1) / deck.length * 100) + "%";
+}
+
+function mark(which) {
+  const t = deck[idx]; if (!t) return;
+  const k = store.known, u = store.unfamiliar;
+  if (which === "known") { k.add(key(t)); u.delete(key(t)); }
+  else { u.add(key(t)); k.delete(key(t)); }
+  store.known = k; store.unfamiliar = u;
+  if (idx < deck.length - 1) idx++;
+  if (onlyUnfamiliar) buildDeck(); else renderCard();
+}
+
+$("card").onclick = () => $("card").classList.toggle("flipped");
+$("prev").onclick = () => { if (idx > 0) { idx--; renderCard(); } };
+$("next").onclick = () => { if (idx < deck.length - 1) { idx++; renderCard(); } };
+$("markKnown").onclick = () => mark("known");
+$("markUnfamiliar").onclick = () => mark("unfamiliar");
+$("domainSel").onchange = () => { refreshCats(); buildDeck(); };
+$("catSel").onchange = buildDeck;
+$("shuffleBtn").onclick = () => {
+  shuffle = !shuffle; localStorage.setItem("fc_shuffle", shuffle ? "1" : "0");
+  $("shuffleBtn").classList.toggle("on", shuffle); buildDeck();
+};
+$("unfamiliarBtn").onclick = () => {
+  onlyUnfamiliar = !onlyUnfamiliar; localStorage.setItem("fc_onlyunf", onlyUnfamiliar ? "1" : "0");
+  $("unfamiliarBtn").classList.toggle("on", onlyUnfamiliar); buildDeck();
+};
+
+function refreshCats() {
+  const d = $("domainSel").value;
+  const cats = [...new Set(TERMS.filter(t => !d || t.domain === d).map(t => t.category))];
+  $("catSel").innerHTML = '<option value="">全部小类</option>' + cats.map(c => '<option>' + c + '</option>').join("");
+}
+
+/* ---------- 词表视图 ---------- */
+function renderList() {
+  const q = $("search").value.trim().toLowerCase();
+  const d = $("listDomainSel").value;
+  const k = store.known, u = store.unfamiliar;
+  const rows = TERMS.filter(t => {
+    if (d && t.domain !== d) return false;
+    const st = statusOf(t);
+    if ($("listKnownOnly").classList.contains("on") && st !== "known") return false;
+    if ($("listUnfOnly").classList.contains("on") && st !== "unfamiliar") return false;
+    if (q && !(t.abbr.toLowerCase().includes(q) || t.full.toLowerCase().includes(q) || t.meaning.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  $("list").innerHTML = rows.length
+    ? rows.map(t => {
+        const st = statusOf(t);
+        return '<div class="row"><span class="dot ' + st + '"></span>' +
+          '<div class="row-main"><div class="row-head"><span class="row-abbr">' + esc(t.abbr) + '</span>' +
+          '<span class="row-full">' + esc(t.full) + '</span></div>' +
+          '<div class="row-meaning">' + esc(t.meaning) + '</div></div>' +
+          '<span class="row-cat">' + esc(t.category) + '</span></div>';
+      }).join("")
+    : '<div class="empty">没有匹配的术语</div>';
+}
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+$("search").oninput = renderList;
+$("listDomainSel").onchange = renderList;
+$("listKnownOnly").onclick = () => { $("listKnownOnly").classList.toggle("on"); renderList(); };
+$("listUnfOnly").onclick = () => { $("listUnfOnly").classList.toggle("on"); renderList(); };
+
+/* ---------- 视图切换 ---------- */
+$("tabFlash").onclick = () => switchView("flash");
+$("tabList").onclick = () => switchView("list");
+function switchView(v) {
+  const isFlash = v === "flash";
+  $("tabFlash").classList.toggle("active", isFlash);
+  $("tabList").classList.toggle("active", !isFlash);
+  $("viewFlash").classList.toggle("hidden", !isFlash);
+  $("viewList").classList.toggle("hidden", isFlash);
+  if (isFlash) renderCard(); else renderList();
+}
+
+/* ---------- 初始化 ---------- */
+$("shuffleBtn").classList.toggle("on", shuffle);
+$("unfamiliarBtn").classList.toggle("on", onlyUnfamiliar);
+refreshCats();
+buildDeck();
+
+document.addEventListener("keydown", e => {
+  if ($("viewFlash").classList.contains("hidden")) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); $("card").click(); }
+  if (e.key === "ArrowLeft") $("prev").click();
+  if (e.key === "ArrowRight") $("next").click();
+  if (e.key === "1") $("markUnfamiliar").click();
+  if (e.key === "2") $("markKnown").click();
+});
+</script>
+</body>
+</html>
