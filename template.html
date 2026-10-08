@@ -131,15 +131,12 @@
   .search-box { position:relative; flex:1; display:flex; align-items:center; }
   .search-box svg { position:absolute; left:11px; width:15px; height:15px; fill:var(--dim); pointer-events:none; }
   .search-box .search { padding-left:32px; }
-  /* 小类下拉：双列网格 */
+  /* 小类下拉：面板锚定筛选行全宽展开（双列网格） */
+  .controls { position:relative; }
+  .dd.grid2 { position:static; }
+  .dd.grid2 .dd-pop { left:0; right:0; max-height:42vh; z-index:45; }
   .dd.grid2.open .dd-pop { display:grid; grid-template-columns:1fr 1fr; }
   .dd.grid2 .dd-opt { padding:10px 12px; border-radius:0 !important; }
-  /* 窄屏：所有下拉弹出层改为底部面板 */
-  @media (max-width:560px) {
-    .dd .dd-pop { position:fixed; left:14px; right:14px; top:auto; bottom:14px;
-                  max-height:48vh; border-radius:16px; box-shadow:0 16px 44px rgba(46,58,56,.22); z-index:70; }
-    .dd.grid2 .dd-pop { max-height:44vh; }
-  }
   .empty { text-align:center; color:var(--dim); padding:60px 0; font-size:14px; }
 
   /* 弹层 */
