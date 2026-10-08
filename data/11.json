@@ -11,7 +11,8 @@
       "Prompt",
       "Hallucination",
       "Grounding"
-    ]
+    ],
+    "ipa_full": "/rɪˈtriːvl ɔːɡˈmentɪd ˌdʒenəˈreɪʃn/"
   },
   {
     "abbr": "Embedding Retrieval",
@@ -24,7 +25,8 @@
       "FAISS",
       "Semantic Search",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ɪmˈbedɪŋ rɪˈtriːvl/"
   },
   {
     "abbr": "Vector Database",
@@ -37,7 +39,8 @@
       "Embedding Retrieval",
       "Semantic Search",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ˈvektə ˈdeɪtəbeɪs/"
   },
   {
     "abbr": "FAISS",
@@ -49,7 +52,8 @@
       "RAG",
       "Embedding Retrieval",
       "GPU"
-    ]
+    ],
+    "ipa_full": "/ˈfeɪsbʊk ˌeɪ ˈaɪ sɪmɪˈlærəti sɜːtʃ/"
   },
   {
     "abbr": "Agent",
@@ -64,7 +68,8 @@
       "ReAct",
       "Workflow",
       "Prompt"
-    ]
+    ],
+    "ipa_full": "/ˈeɪdʒənt/"
   },
   {
     "abbr": "MCP",
@@ -76,7 +81,8 @@
       "Tool Use",
       "API",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ˈmɒdl ˈkɒntekst ˈprəʊtəkɒl/"
   },
   {
     "abbr": "Function Calling",
@@ -88,7 +94,8 @@
       "API",
       "Prompt",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ˈfʌŋkʃn ˈkɔːlɪŋ/"
   },
   {
     "abbr": "Tool Use",
@@ -100,7 +107,8 @@
       "MCP",
       "API",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/tuːl juːz/"
   },
   {
     "abbr": "Workflow",
@@ -112,7 +120,8 @@
       "LangChain",
       "LLM",
       "Prompt"
-    ]
+    ],
+    "ipa_full": "/ˈwɜːkfləʊ/"
   },
   {
     "abbr": "Orchestration",
@@ -124,7 +133,8 @@
       "Context Window",
       "LLM",
       "Tool Use"
-    ]
+    ],
+    "ipa_full": "/ˌɔːkɪˈstreɪʃn/"
   },
   {
     "abbr": "Multimodal",
@@ -137,7 +147,8 @@
       "Embedding",
       "Transformer",
       "Text-to-Image"
-    ]
+    ],
+    "ipa_full": "/ˌmʌltiˈməʊdl/"
   },
   {
     "abbr": "VLM",
@@ -150,7 +161,8 @@
       "Transformer",
       "Hallucination",
       "Embedding"
-    ]
+    ],
+    "ipa_full": "/ˌvɪʒn ˈlæŋɡwɪdʒ ˈmɒdl/"
   },
   {
     "abbr": "Diffusion",
@@ -161,7 +173,8 @@
       "Text-to-Image",
       "CLIP",
       "Multimodal"
-    ]
+    ],
+    "ipa_full": "/dɪˈfjuːʒn/"
   },
   {
     "abbr": "Stable Diffusion",
@@ -174,7 +187,8 @@
       "Hugging Face",
       "Fine-tuning",
       "LoRA"
-    ]
+    ],
+    "ipa_full": "/ˈsteɪbl dɪˈfjuːʒn/"
   },
   {
     "abbr": "CLIP",
@@ -187,7 +201,8 @@
       "Text-to-Image",
       "Zero-shot",
       "Transformer"
-    ]
+    ],
+    "ipa_full": "/kənˈtrɑːstɪv ˈlæŋɡwɪdʒ ˈɪmɪdʒ ˌpriːˈtreɪnɪŋ/"
   },
   {
     "abbr": "Text-to-Image",
@@ -199,7 +214,8 @@
       "CLIP",
       "Prompt",
       "Multimodal"
-    ]
+    ],
+    "ipa_full": "/ˈtekst tuː ˈɪmɪdʒ/"
   },
   {
     "abbr": "ASR",
@@ -210,7 +226,8 @@
       "LLM",
       "Transformer",
       "Multimodal"
-    ]
+    ],
+    "ipa_full": "/ˌɔːtəˈmætɪk spiːtʃ ˌrekəɡˈnɪʃn/"
   },
   {
     "abbr": "TTS",
@@ -220,7 +237,8 @@
       "ASR",
       "LLM",
       "Multimodal"
-    ]
+    ],
+    "ipa_full": "/ˈtekst tuː spiːtʃ/"
   },
   {
     "abbr": "Copilot",
@@ -232,7 +250,8 @@
       "Prompt",
       "Chatbot",
       "Workflow"
-    ]
+    ],
+    "ipa_full": "/ˈkəʊpaɪlət/"
   },
   {
     "abbr": "Chatbot",
@@ -246,7 +265,8 @@
       "Hallucination",
       "Chatbot Arena",
       "Function Calling"
-    ]
+    ],
+    "ipa_full": "/ˈtʃætbɒt/"
   },
   {
     "abbr": "Benchmark",
@@ -259,7 +279,8 @@
       "Evaluation",
       "Chatbot Arena",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ˈbentʃmɑːk/"
   },
   {
     "abbr": "MMLU",
@@ -272,7 +293,8 @@
       "C-Eval",
       "HumanEval",
       "Scaling Law"
-    ]
+    ],
+    "ipa_full": "/ˈmæsɪv ˌmʌltiˈtɑːsk ˈlæŋɡwɪdʒ ˌʌndəˈstændɪŋ/"
   },
   {
     "abbr": "HumanEval",
@@ -285,7 +307,8 @@
       "GPT",
       "LLaMA",
       "DeepSeek"
-    ]
+    ],
+    "ipa_full": "/ˈhjuːmən ɪˈvæl/"
   },
   {
     "abbr": "C-Eval",
@@ -298,7 +321,8 @@
       "LLM",
       "Qwen",
       "DeepSeek"
-    ]
+    ],
+    "ipa_full": "/siː ɪˈvæl/"
   },
   {
     "abbr": "LLaMA",
@@ -313,7 +337,8 @@
       "Mistral",
       "GGUF",
       "Quantization"
-    ]
+    ],
+    "ipa_full": "/ˈlɑːdʒ ˈlæŋɡwɪdʒ ˈmɒdl ˈmetə ˌeɪ ˈaɪ/"
   },
   {
     "abbr": "Qwen",
@@ -327,7 +352,8 @@
       "C-Eval",
       "GGUF",
       "Transformer"
-    ]
+    ],
+    "ipa_full": "/kwen/"
   },
   {
     "abbr": "DeepSeek",
@@ -341,7 +367,8 @@
       "GRPO",
       "Distillation",
       "Hugging Face"
-    ]
+    ],
+    "ipa_full": "/ˈdiːpsiːk/"
   },
   {
     "abbr": "Mistral",
@@ -354,7 +381,8 @@
       "Hugging Face",
       "SLM",
       "Qwen"
-    ]
+    ],
+    "ipa_full": "/ˈmɪstrəl/"
   },
   {
     "abbr": "Gemma",
@@ -367,7 +395,8 @@
       "LLaMA",
       "Qwen",
       "Mistral"
-    ]
+    ],
+    "ipa_full": "/ˈdʒemə/"
   },
   {
     "abbr": "Hugging Face",
@@ -381,7 +410,8 @@
       "GGUF",
       "Deployment",
       "LLaMA"
-    ]
+    ],
+    "ipa_full": "/ˈhʌɡɪŋ feɪs/"
   },
   {
     "abbr": "OpenAI API",
@@ -395,7 +425,8 @@
       "LangChain",
       "vLLM",
       "DeepSeek"
-    ]
+    ],
+    "ipa_full": "/ˈəʊpən ˌeɪ ˈaɪ ˌæplɪˈkeɪʃn ˈprəʊɡræmɪŋ ˈɪntəfeɪs/"
   },
   {
     "abbr": "Fine-tuning Platform",
@@ -409,7 +440,8 @@
       "GPU",
       "Post-training",
       "RAG"
-    ]
+    ],
+    "ipa_full": "/ˈfaɪn tjuːnɪŋ ˈplætfɔːm/"
   },
   {
     "abbr": "LangChain",
@@ -424,7 +456,8 @@
       "Workflow",
       "LlamaIndex",
       "Embedding Retrieval"
-    ]
+    ],
+    "ipa_full": "/ˈlæŋtʃeɪn/"
   },
   {
     "abbr": "LlamaIndex",
@@ -437,7 +470,8 @@
       "LangChain",
       "LLM",
       "Embedding Retrieval"
-    ]
+    ],
+    "ipa_full": "/ˈlɑːmə ˈɪndeks/"
   },
   {
     "abbr": "Prompt Template",
@@ -449,7 +483,8 @@
       "LangChain",
       "Few-shot",
       "System Prompt"
-    ]
+    ],
+    "ipa_full": "/prɒmpt ˈtempleɪt/"
   },
   {
     "abbr": "Semantic Search",
@@ -461,7 +496,8 @@
       "Vector Database",
       "RAG",
       "FAISS"
-    ]
+    ],
+    "ipa_full": "/sɪˈmæntɪk sɜːtʃ/"
   },
   {
     "abbr": "Chatbot Arena",
@@ -474,7 +510,8 @@
       "Chatbot",
       "MMLU",
       "HumanEval"
-    ]
+    ],
+    "ipa_full": "/ˈtʃætbɒt əˈriːnə/"
   },
   {
     "abbr": "Grounding",
@@ -486,7 +523,8 @@
       "LLM",
       "Embedding Retrieval",
       "Prompt"
-    ]
+    ],
+    "ipa_full": "/ˈɡraʊndɪŋ/"
   },
   {
     "abbr": "Fine-tuning",
@@ -501,6 +539,7 @@
       "LLM",
       "Catastrophic Forgetting",
       "Overfitting"
-    ]
+    ],
+    "ipa_full": "/ˈfaɪn tjuːnɪŋ/"
   }
 ]

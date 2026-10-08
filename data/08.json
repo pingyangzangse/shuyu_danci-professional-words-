@@ -11,7 +11,8 @@
       "LLM",
       "GPU",
       "Continual Pre-training"
-    ]
+    ],
+    "ipa_full": "/priː ˈtreɪnɪŋ/"
   },
   {
     "abbr": "Post-training",
@@ -24,7 +25,8 @@
       "DPO",
       "Alignment",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/pəʊst ˈtreɪnɪŋ/"
   },
   {
     "abbr": "SFT",
@@ -39,7 +41,8 @@
       "DPO",
       "LoRA",
       "FFT"
-    ]
+    ],
+    "ipa_full": "/ˈsuːpəvaɪzd faɪn ˈtjuːnɪŋ/"
   },
   {
     "abbr": "Instruction Tuning",
@@ -53,7 +56,8 @@
       "Instruction Following",
       "Zero-shot",
       "Few-shot"
-    ]
+    ],
+    "ipa_full": "/ɪnˈstrʌkʃn ˈtjuːnɪŋ/"
   },
   {
     "abbr": "LoRA",
@@ -68,7 +72,8 @@
       "Adapter",
       "GPU",
       "VRAM"
-    ]
+    ],
+    "ipa_full": "/ləʊ ræŋk ˌædæpˈteɪʃn/"
   },
   {
     "abbr": "QLoRA",
@@ -82,7 +87,8 @@
       "VRAM",
       "LLaMA",
       "Qwen"
-    ]
+    ],
+    "ipa_full": "/ˈkwɒntaɪzd ləʊ ræŋk ˌædæpˈteɪʃn/"
   },
   {
     "abbr": "DoRA",
@@ -94,7 +100,8 @@
       "PEFT",
       "SFT",
       "QLoRA"
-    ]
+    ],
+    "ipa_full": "/weɪt diːkəmˈpəʊzd ləʊ ræŋk ˌædæpˈteɪʃn/"
   },
   {
     "abbr": "Adapter",
@@ -108,7 +115,8 @@
       "LoRA",
       "Prefix-Tuning",
       "P-Tuning"
-    ]
+    ],
+    "ipa_full": "/əˈdæptə(r)/"
   },
   {
     "abbr": "Prefix-Tuning",
@@ -122,7 +130,8 @@
       "P-Tuning",
       "Adapter",
       "LoRA"
-    ]
+    ],
+    "ipa_full": "/ˈpriːfɪks ˈtjuːnɪŋ/"
   },
   {
     "abbr": "P-Tuning",
@@ -135,7 +144,8 @@
       "GPT",
       "BERT",
       "FFT"
-    ]
+    ],
+    "ipa_full": "/piː ˈtjuːnɪŋ/"
   },
   {
     "abbr": "PEFT",
@@ -150,7 +160,8 @@
       "Prefix-Tuning",
       "P-Tuning",
       "Catastrophic Forgetting"
-    ]
+    ],
+    "ipa_full": "/pəˈræmɪtə(r) ɪˈfɪʃnt faɪn ˈtjuːnɪŋ/"
   },
   {
     "abbr": "FFT",
@@ -163,7 +174,8 @@
       "Catastrophic Forgetting",
       "BERT",
       "Continual Pre-training"
-    ]
+    ],
+    "ipa_full": "/fʊl faɪn ˈtjuːnɪŋ/"
   },
   {
     "abbr": "RL",
@@ -178,7 +190,8 @@
       "Post-training",
       "CoT",
       "DeepSeek"
-    ]
+    ],
+    "ipa_full": "/ˌriːɪnˈfɔːsmənt ˈlɜːnɪŋ/"
   },
   {
     "abbr": "RLHF",
@@ -193,7 +206,8 @@
       "Alignment",
       "RLAIF",
       "DPO"
-    ]
+    ],
+    "ipa_full": "/ˌriːɪnˈfɔːsmənt ˈlɜːnɪŋ frɒm ˈhjuːmən ˈfiːdbæk/"
   },
   {
     "abbr": "RLAIF",
@@ -206,7 +220,8 @@
       "Constitutional AI",
       "Post-training",
       "Alignment"
-    ]
+    ],
+    "ipa_full": "/ˌriːɪnˈfɔːsmənt ˈlɜːnɪŋ frɒm ˌeɪ ˈaɪ ˈfiːdbæk/"
   },
   {
     "abbr": "PPO",
@@ -220,7 +235,8 @@
       "GRPO",
       "DPO",
       "DeepSeek"
-    ]
+    ],
+    "ipa_full": "/ˈprɒksɪməl ˈpɒləsi ˌɒptɪmaɪˈzeɪʃn/"
   },
   {
     "abbr": "DPO",
@@ -233,7 +249,8 @@
       "SFT",
       "Post-training",
       "KTO"
-    ]
+    ],
+    "ipa_full": "/dəˈrekt ˈprefrəns ˌɒptɪmaɪˈzeɪʃn/"
   },
   {
     "abbr": "KTO",
@@ -245,7 +262,8 @@
       "Reward Model",
       "Post-training",
       "Alignment"
-    ]
+    ],
+    "ipa_full": "/ˌkɑːnəmæn ˈtvɜːski ˌɒptɪmaɪˈzeɪʃn/"
   },
   {
     "abbr": "GRPO",
@@ -259,7 +277,8 @@
       "CoT",
       "Post-training",
       "vLLM"
-    ]
+    ],
+    "ipa_full": "/ɡruːp ˈrelətɪv ˈpɒləsi ˌɒptɪmaɪˈzeɪʃn/"
   },
   {
     "abbr": "Reward Model",
@@ -273,7 +292,8 @@
       "KTO",
       "Post-training",
       "GRPO"
-    ]
+    ],
+    "ipa_full": "/rɪˈwɔːd ˈmɒdl/"
   },
   {
     "abbr": "Distillation",
@@ -287,7 +307,8 @@
       "DeepSeek",
       "Parameter",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/ˌnɒlɪdʒ dɪstɪˈleɪʃn/"
   },
   {
     "abbr": "Quantization",
@@ -302,7 +323,8 @@
       "VRAM",
       "GPU",
       "Quantized Inference"
-    ]
+    ],
+    "ipa_full": "/ˌkwɒntaɪˈzeɪʃn/"
   },
   {
     "abbr": "GPTQ",
@@ -315,7 +337,8 @@
       "Hugging Face",
       "Inference",
       "VRAM"
-    ]
+    ],
+    "ipa_full": "/ˌdʒenərəlaɪzd pəʊst ˈtreɪnɪŋ ˌkwɒntaɪˈzeɪʃn/"
   },
   {
     "abbr": "AWQ",
@@ -328,7 +351,8 @@
       "TensorRT-LLM",
       "MoE",
       "Inference"
-    ]
+    ],
+    "ipa_full": "/ˌæktɪˈveɪʃn əˈweə(r) weɪt ˌkwɒntaɪˈzeɪʃn/"
   },
   {
     "abbr": "GGUF",
@@ -341,7 +365,8 @@
       "Hugging Face",
       "Deployment",
       "Inference"
-    ]
+    ],
+    "ipa_full": "/dʒiː piː tiː ˈdʒenəreɪtɪd ˈjuːnɪfaɪd ˈfɔːmæt/"
   },
   {
     "abbr": "Pruning",
@@ -353,7 +378,8 @@
       "GPU",
       "Deployment",
       "Parameter"
-    ]
+    ],
+    "ipa_full": "/ˈpruːnɪŋ/"
   },
   {
     "abbr": "Catastrophic Forgetting",
@@ -367,7 +393,8 @@
       "Learning Rate",
       "Evaluation",
       "MMLU"
-    ]
+    ],
+    "ipa_full": "/ˌkætəˈstrɒfɪk fəˈɡetɪŋ/"
   },
   {
     "abbr": "Overfitting",
@@ -381,7 +408,8 @@
       "Epoch",
       "Evaluation",
       "SFT"
-    ]
+    ],
+    "ipa_full": "/ˌəʊvəˈfɪtɪŋ/"
   },
   {
     "abbr": "Learning Rate",
@@ -395,7 +423,8 @@
       "Batch Size",
       "Loss",
       "Checkpoint"
-    ]
+    ],
+    "ipa_full": "/ˈlɜːnɪŋ reɪt/"
   },
   {
     "abbr": "Batch Size",
@@ -409,7 +438,8 @@
       "VRAM",
       "Token",
       "Batching"
-    ]
+    ],
+    "ipa_full": "/bætʃ saɪz/"
   },
   {
     "abbr": "Epoch",
@@ -422,7 +452,8 @@
       "Early Stopping",
       "SFT",
       "Evaluation"
-    ]
+    ],
+    "ipa_full": "/ˈiːpɒk/"
   },
   {
     "abbr": "Checkpoint",
@@ -435,7 +466,8 @@
       "SFT",
       "LoRA",
       "Pre-training"
-    ]
+    ],
+    "ipa_full": "/ˈtʃekpɔɪnt/"
   },
   {
     "abbr": "Loss",
@@ -449,7 +481,8 @@
       "Token",
       "SFT",
       "Evaluation"
-    ]
+    ],
+    "ipa_full": "/lɒs ˈfʌŋkʃn/"
   },
   {
     "abbr": "Gradient Descent",
@@ -462,7 +495,8 @@
       "Gradient Clipping",
       "Warmup",
       "Mixed Precision"
-    ]
+    ],
+    "ipa_full": "/ˈɡreɪdiənt dɪˈsent/"
   },
   {
     "abbr": "Adam",
@@ -476,7 +510,8 @@
       "FFT",
       "VRAM",
       "Regularization"
-    ]
+    ],
+    "ipa_full": "/əˈdæptɪv ˈməʊmənt ˌestɪˈmeɪʃn/"
   },
   {
     "abbr": "Warmup",
@@ -489,7 +524,8 @@
       "Loss",
       "Hyperparameter",
       "Pre-training"
-    ]
+    ],
+    "ipa_full": "/ˈlɜːnɪŋ reɪt ˈwɔːmʌp/"
   },
   {
     "abbr": "Gradient Clipping",
@@ -502,7 +538,8 @@
       "Adam",
       "Residual",
       "LayerNorm"
-    ]
+    ],
+    "ipa_full": "/ˈɡreɪdiənt ˈklɪpɪŋ/"
   },
   {
     "abbr": "Mixed Precision",
@@ -515,7 +552,8 @@
       "VRAM",
       "Loss",
       "Gradient Descent"
-    ]
+    ],
+    "ipa_full": "/mɪkst prɪˈsɪʒn ˈtreɪnɪŋ/"
   },
   {
     "abbr": "Continual Pre-training",
@@ -529,7 +567,8 @@
       "Token",
       "LoRA",
       "FFT"
-    ]
+    ],
+    "ipa_full": "/kənˈtɪnjuəl priː ˈtreɪnɪŋ/"
   },
   {
     "abbr": "Curriculum Learning",
@@ -541,7 +580,8 @@
       "RL",
       "Loss",
       "Hyperparameter"
-    ]
+    ],
+    "ipa_full": "/kəˈrɪkjələm ˈlɜːnɪŋ/"
   },
   {
     "abbr": "Regularization",
@@ -555,7 +595,8 @@
       "SFT",
       "LoRA",
       "Evaluation"
-    ]
+    ],
+    "ipa_full": "/ˌreɡjələraɪˈzeɪʃn/"
   },
   {
     "abbr": "Dropout",
@@ -568,7 +609,8 @@
       "Early Stopping",
       "Pre-training",
       "Epoch"
-    ]
+    ],
+    "ipa_full": "/ˈdrɒpaʊt/"
   },
   {
     "abbr": "Early Stopping",
@@ -582,7 +624,8 @@
       "Epoch",
       "SFT",
       "Loss"
-    ]
+    ],
+    "ipa_full": "/ˈɜːli ˈstɒpɪŋ/"
   },
   {
     "abbr": "Hyperparameter",
@@ -596,7 +639,8 @@
       "Warmup",
       "Parameter",
       "Scaling Law"
-    ]
+    ],
+    "ipa_full": "/ˌhaɪpəpəˈræmɪtə(r)/"
   },
   {
     "abbr": "Evaluation",
@@ -612,6 +656,7 @@
       "Hallucination",
       "Red Teaming",
       "Chatbot Arena"
-    ]
+    ],
+    "ipa_full": "/ˈmɒdl ɪˌvæljuˈeɪʃn/"
   }
 ]

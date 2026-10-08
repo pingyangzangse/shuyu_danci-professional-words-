@@ -11,7 +11,8 @@
       "PVT",
       "MP",
       "DFM"
-    ]
+    ],
+    "ipa_full": "/ˌnjuː ˈprɒdʌkt ˌɪntrəˈdʌkʃən/"
   },
   {
     "abbr": "EVT",
@@ -24,7 +25,8 @@
       "PVT",
       "IPD",
       "NPI"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ ˌvælɪˈdeɪʃən test/"
   },
   {
     "abbr": "DVT",
@@ -38,7 +40,8 @@
       "EMC",
       "NPI",
       "IPD"
-    ]
+    ],
+    "ipa_full": "/dɪˈzaɪn ˌvælɪˈdeɪʃən test/"
   },
   {
     "abbr": "PVT",
@@ -52,7 +55,8 @@
       "FPY",
       "NPI",
       "IPD"
-    ]
+    ],
+    "ipa_full": "/prəˈdʌkʃən ˌvælɪˈdeɪʃən test/"
   },
   {
     "abbr": "MP",
@@ -66,7 +70,8 @@
       "OQC",
       "IPD",
       "GA"
-    ]
+    ],
+    "ipa_full": "/ˌmæs prəˈdʌkʃən/"
   },
   {
     "abbr": "WS",
@@ -79,7 +84,8 @@
       "NPI",
       "IPD",
       "试制阶段"
-    ]
+    ],
+    "ipa_full": "/ˈwɜːkɪŋ ˈsɑːmpəl/"
   },
   {
     "abbr": "ES",
@@ -93,7 +99,8 @@
       "ECN",
       "NPI",
       "试制阶段"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ ˈsɑːmpəl/"
   },
   {
     "abbr": "CS",
@@ -107,7 +114,8 @@
       "NPI",
       "IPD",
       "Golden Sample"
-    ]
+    ],
+    "ipa_full": "/ˈkʌstəmə ˈsɑːmpəl/"
   },
   {
     "abbr": "PP",
@@ -121,7 +129,8 @@
       "CPK",
       "NPI",
       "试产阶段"
-    ]
+    ],
+    "ipa_full": "/ˈpaɪlət prəˈdʌkʃən/"
   },
   {
     "abbr": "试制阶段",
@@ -135,7 +144,8 @@
       "IPD",
       "试产阶段",
       "DFM"
-    ]
+    ],
+    "ipa_full": "/ˈtraɪəl prəˈdʌkʃən feɪz/"
   },
   {
     "abbr": "试产阶段",
@@ -150,7 +160,8 @@
       "SMT",
       "IPD",
       "TR6"
-    ]
+    ],
+    "ipa_full": "/ˈpaɪlət prəˈdʌkʃən feɪz/"
   },
   {
     "abbr": "量产阶段",
@@ -165,7 +176,8 @@
       "EOL",
       "IPD",
       "GA"
-    ]
+    ],
+    "ipa_full": "/ˌmæs prəˈdʌkʃən feɪz/"
   },
   {
     "abbr": "Ramp-up",
@@ -179,7 +191,8 @@
       "量产阶段",
       "NPI",
       "OEE"
-    ]
+    ],
+    "ipa_full": "/ˈræmp ʌp/"
   },
   {
     "abbr": "PPAP",
@@ -193,7 +206,8 @@
       "CPK",
       "SQE",
       "FA（首件）"
-    ]
+    ],
+    "ipa_full": "/prəˈdʌkʃən pɑːt əˈpruːvəl ˈprəʊses/"
   },
   {
     "abbr": "APQP",
@@ -207,7 +221,8 @@
       "MSA",
       "IPD",
       "SQE"
-    ]
+    ],
+    "ipa_full": "/ədˈvɑːnst ˈprɒdʌkt ˈkwɒləti ˈplænɪŋ/"
   },
   {
     "abbr": "BOM",
@@ -221,7 +236,8 @@
       "PLM",
       "ECN",
       "IPD"
-    ]
+    ],
+    "ipa_full": "/ˌbɪl əv məˈtɪəriəlz/"
   },
   {
     "abbr": "EBOM",
@@ -235,7 +251,8 @@
       "ECR",
       "NPI",
       "IPD"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ bɪl əv məˈtɪəriəlz/"
   },
   {
     "abbr": "MBOM",
@@ -249,7 +266,8 @@
       "ERP",
       "NPI",
       "试产阶段"
-    ]
+    ],
+    "ipa_full": "/ˌmænjʊˈfæktʃərɪŋ bɪl əv məˈtɪəriəlz/"
   },
   {
     "abbr": "ECN",
@@ -262,7 +280,8 @@
       "PCN",
       "PLM",
       "量产阶段"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ tʃeɪndʒ ˈnəʊtɪs/"
   },
   {
     "abbr": "ECR",
@@ -275,7 +294,8 @@
       "NPI",
       "IPD",
       "BOM"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ tʃeɪndʒ rɪˈkwest/"
   },
   {
     "abbr": "ECO",
@@ -289,7 +309,8 @@
       "ERP",
       "BOM",
       "量产阶段"
-    ]
+    ],
+    "ipa_full": "/ˌendʒɪˈnɪərɪŋ tʃeɪndʒ ˈɔːdə/"
   },
   {
     "abbr": "PCN",
@@ -303,7 +324,8 @@
       "AVL",
       "ORT",
       "IQC"
-    ]
+    ],
+    "ipa_full": "/ˈprɒdʌkt tʃeɪndʒ ˌnəʊtɪfɪˈkeɪʃən/"
   },
   {
     "abbr": "EOL(变更)",
@@ -317,7 +339,8 @@
       "EOL",
       "ISC",
       "SQE"
-    ]
+    ],
+    "ipa_full": "/ˌend əv ˈlaɪf/"
   },
   {
     "abbr": "AVL",
@@ -330,7 +353,8 @@
       "ISC",
       "EOL(变更)",
       "SRM"
-    ]
+    ],
+    "ipa_full": "/əˈpruːvd ˈvendə lɪst/"
   },
   {
     "abbr": "SMT",
@@ -344,7 +368,8 @@
       "PCBA",
       "试产阶段",
       "ICT"
-    ]
+    ],
+    "ipa_full": "/ˈsɜːfɪs maʊnt tekˈnɒlədʒi/"
   },
   {
     "abbr": "DIP",
@@ -357,7 +382,8 @@
       "FCT",
       "AOI",
       "Poka-Yoke"
-    ]
+    ],
+    "ipa_full": "/ˌdjuːəl ɪnˈlaɪn ˈpækɪdʒ/"
   },
   {
     "abbr": "ICT",
@@ -371,7 +397,8 @@
       "SMT",
       "FPY",
       "NPI"
-    ]
+    ],
+    "ipa_full": "/ˌɪn ˈsɜːkɪt test/"
   },
   {
     "abbr": "FCT",
@@ -384,7 +411,8 @@
       "试产阶段",
       "FPY",
       "Golden Sample"
-    ]
+    ],
+    "ipa_full": "/ˈfʌŋkʃənəl ˈsɜːkɪt test/"
   },
   {
     "abbr": "AOI",
@@ -398,7 +426,8 @@
       "SPC",
       "FPY",
       "DIP"
-    ]
+    ],
+    "ipa_full": "/ˈɔːtəmeɪtɪd ˈɒptɪkəl ɪnˈspekʃən/"
   },
   {
     "abbr": "AXI",
@@ -411,7 +440,8 @@
       "SMT",
       "Reliability Test",
       "SPI"
-    ]
+    ],
+    "ipa_full": "/ˈɔːtəmeɪtɪd ˈeks reɪ ɪnˈspekʃən/"
   },
   {
     "abbr": "SPI",
@@ -424,7 +454,8 @@
       "FPY",
       "SPC",
       "DIP"
-    ]
+    ],
+    "ipa_full": "/ˈsəʊldə peɪst ɪnˈspekʃən/"
   },
   {
     "abbr": "ICT 治具",
@@ -437,7 +468,8 @@
       "NPI",
       "ECN",
       "试产阶段"
-    ]
+    ],
+    "ipa_full": "/ˌɪn ˈsɜːkɪt test ˈfɪkstʃə/"
   },
   {
     "abbr": "Golden Sample",
@@ -450,7 +482,8 @@
       "CS",
       "试产阶段",
       "AQL"
-    ]
+    ],
+    "ipa_full": "/ˈɡəʊldən ˈsɑːmpəl/"
   },
   {
     "abbr": "Pilot Run",
@@ -465,7 +498,8 @@
       "TR6",
       "DCP",
       "NPI"
-    ]
+    ],
+    "ipa_full": "/ˈpaɪlət rʌn/"
   },
   {
     "abbr": "ORT 老化",
@@ -478,7 +512,8 @@
       "MTBF",
       "DPPM",
       "ORT"
-    ]
+    ],
+    "ipa_full": "/ˌɒnˈɡəʊɪŋ rɪˌlaɪəˈbɪləti test/"
   },
   {
     "abbr": "Reliability Test",
@@ -492,7 +527,8 @@
       "Telcordia",
       "CS",
       "CE"
-    ]
+    ],
+    "ipa_full": "/rɪˌlaɪəˈbɪləti test/"
   },
   {
     "abbr": "FA（首件）",
@@ -505,7 +541,8 @@
       "量产阶段",
       "FPY",
       "Poka-Yoke"
-    ]
+    ],
+    "ipa_full": "/ˌfɜːst ˈɑːtɪkəl ɪnˈspekʃən/"
   },
   {
     "abbr": "PCBA",
@@ -520,7 +557,8 @@
       "IPC-A-610",
       "WIP",
       "FPY"
-    ]
+    ],
+    "ipa_full": "/ˌprɪntɪd ˈsɜːkɪt bɔːd əˈsembli/"
   },
   {
     "abbr": "DFM 分析",
@@ -534,6 +572,7 @@
       "试制阶段",
       "ECN",
       "DFA"
-    ]
+    ],
+    "ipa_full": "/dɪˈzaɪn fə ˌmænjʊˌfæktʃərəˈbɪləti/"
   }
 ]

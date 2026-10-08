@@ -12,7 +12,8 @@
       "vLLM",
       "Pre-training",
       "SFT"
-    ]
+    ],
+    "ipa_full": "/ˈɪnfərəns/"
   },
   {
     "abbr": "Decoding",
@@ -27,7 +28,8 @@
       "Logits",
       "Softmax",
       "Token"
-    ]
+    ],
+    "ipa_full": "/ˌdiːˈkəʊdɪŋ/"
   },
   {
     "abbr": "Greedy Decoding",
@@ -40,7 +42,8 @@
       "Top-p",
       "Beam Search",
       "Logits"
-    ]
+    ],
+    "ipa_full": "/ˈɡriːdi ˌdiːˈkəʊdɪŋ/"
   },
   {
     "abbr": "Temperature",
@@ -54,7 +57,8 @@
       "Top-k",
       "Greedy Decoding",
       "Hallucination"
-    ]
+    ],
+    "ipa_full": "/ˈtemprətʃə/"
   },
   {
     "abbr": "Top-p",
@@ -66,7 +70,8 @@
       "Decoding",
       "Softmax",
       "Token"
-    ]
+    ],
+    "ipa_full": "/ˈnjuːkliəs ˈsɑːmplɪŋ/"
   },
   {
     "abbr": "Top-k",
@@ -79,7 +84,8 @@
       "Vocabulary",
       "Token",
       "Softmax"
-    ]
+    ],
+    "ipa_full": "/tɒp keɪ/"
   },
   {
     "abbr": "Beam Search",
@@ -92,7 +98,8 @@
       "Token",
       "ASR",
       "LLM"
-    ]
+    ],
+    "ipa_full": "/biːm sɜːtʃ/"
   },
   {
     "abbr": "Streaming",
@@ -105,7 +112,8 @@
       "OpenAI API",
       "Chatbot",
       "API"
-    ]
+    ],
+    "ipa_full": "/ˈstriːmɪŋ/"
   },
   {
     "abbr": "Speculative Decoding",
@@ -118,7 +126,8 @@
       "vLLM",
       "TensorRT-LLM",
       "Throughput"
-    ]
+    ],
+    "ipa_full": "/ˈspekjələtɪv ˌdiːˈkəʊdɪŋ/"
   },
   {
     "abbr": "vLLM",
@@ -133,7 +142,8 @@
       "GPU",
       "Throughput",
       "OpenAI API"
-    ]
+    ],
+    "ipa_full": "/ˌviː ˌel el ˈem/"
   },
   {
     "abbr": "PagedAttention",
@@ -148,7 +158,8 @@
       "TensorRT-LLM",
       "Batching",
       "Throughput"
-    ]
+    ],
+    "ipa_full": "/ˈpeɪdʒd əˈtenʃn/"
   },
   {
     "abbr": "TGI",
@@ -163,7 +174,8 @@
       "PagedAttention",
       "Quantization",
       "vLLM"
-    ]
+    ],
+    "ipa_full": "/tekst ˌdʒenəˈreɪʃn ˈɪnfərəns/"
   },
   {
     "abbr": "TensorRT-LLM",
@@ -177,7 +189,8 @@
       "Latency",
       "Throughput",
       "vLLM"
-    ]
+    ],
+    "ipa_full": "/ˈtensə ɑː tiː ˈlɑːdʒ ˌlæŋɡwɪdʒ ˈmɒdl/"
   },
   {
     "abbr": "llama.cpp",
@@ -190,7 +203,8 @@
       "Ollama",
       "CUDA",
       "GPU"
-    ]
+    ],
+    "ipa_full": "/ˈlɑːmə dɒt ˌsiː plʌs ˈplʌs/"
   },
   {
     "abbr": "Ollama",
@@ -204,7 +218,8 @@
       "DeepSeek",
       "LLM",
       "Deployment"
-    ]
+    ],
+    "ipa_full": "/əˈlɑːmə/"
   },
   {
     "abbr": "GPU",
@@ -218,7 +233,8 @@
       "Pre-training",
       "KV Cache",
       "Inference"
-    ]
+    ],
+    "ipa_full": "/ˈɡræfɪks ˈprəʊsesɪŋ ˈjuːnɪt/"
   },
   {
     "abbr": "NPU",
@@ -230,7 +246,8 @@
       "SLM",
       "Inference",
       "Latency"
-    ]
+    ],
+    "ipa_full": "/ˈnjʊərəl ˈprəʊsesɪŋ ˈjuːnɪt/"
   },
   {
     "abbr": "TPU",
@@ -241,7 +258,8 @@
       "NPU",
       "CUDA",
       "Inference"
-    ]
+    ],
+    "ipa_full": "/ˈtensə ˈprəʊsesɪŋ ˈjuːnɪt/"
   },
   {
     "abbr": "CUDA",
@@ -253,7 +271,8 @@
       "TPU",
       "NPU",
       "Inference"
-    ]
+    ],
+    "ipa_full": "/kəmˈpjuːt ˌjuːnɪfaɪd dɪˈvaɪs ˌɑːkɪtektʃə/"
   },
   {
     "abbr": "VRAM",
@@ -267,7 +286,8 @@
       "GGUF",
       "PagedAttention",
       "Parameter"
-    ]
+    ],
+    "ipa_full": "/ˈvɪdɪəʊ ˈrændəm ˈækses ˈmeməri/"
   },
   {
     "abbr": "Context Window",
@@ -282,7 +302,8 @@
       "VRAM",
       "KV Cache",
       "RAG"
-    ]
+    ],
+    "ipa_full": "/ˈkɒntekst ˈwɪndəʊ/"
   },
   {
     "abbr": "Latency",
@@ -295,7 +316,8 @@
       "Batching",
       "Quantization",
       "GPU"
-    ]
+    ],
+    "ipa_full": "/ˈleɪtnsi/"
   },
   {
     "abbr": "Throughput",
@@ -310,7 +332,8 @@
       "TTFT",
       "TPOT",
       "API"
-    ]
+    ],
+    "ipa_full": "/ˈθruːpʊt/"
   },
   {
     "abbr": "TTFT",
@@ -325,7 +348,8 @@
       "Flash Attention",
       "System Prompt",
       "Throughput"
-    ]
+    ],
+    "ipa_full": "/taɪm tə fɜːst ˈtəʊkən/"
   },
   {
     "abbr": "TPOT",
@@ -340,7 +364,8 @@
       "KV Cache",
       "Quantized Inference",
       "Speculative Decoding"
-    ]
+    ],
+    "ipa_full": "/taɪm pə ˈaʊtpʊt ˈtəʊkən/"
   },
   {
     "abbr": "Prefill",
@@ -355,7 +380,8 @@
       "Tokenization",
       "Embedding",
       "Transformer"
-    ]
+    ],
+    "ipa_full": "/priːˈfɪl/"
   },
   {
     "abbr": "Decode Stage",
@@ -370,7 +396,8 @@
       "Batching",
       "Speculative Decoding",
       "Throughput"
-    ]
+    ],
+    "ipa_full": "/ˌdiːˈkəʊd steɪdʒ/"
   },
   {
     "abbr": "Batching",
@@ -385,7 +412,8 @@
       "vLLM",
       "TGI",
       "KV Cache"
-    ]
+    ],
+    "ipa_full": "/kənˈtɪnjuəs ˈbætʃɪŋ/"
   },
   {
     "abbr": "Quantized Inference",
@@ -400,7 +428,8 @@
       "TPOT",
       "llama.cpp",
       "Quantization"
-    ]
+    ],
+    "ipa_full": "/ˈkwɒntaɪzd ˈɪnfərəns/"
   },
   {
     "abbr": "Deployment",
@@ -415,7 +444,8 @@
       "GPU",
       "Latency",
       "Throughput"
-    ]
+    ],
+    "ipa_full": "/dɪˈplɔɪmənt/"
   },
   {
     "abbr": "API",
@@ -430,7 +460,8 @@
       "Temperature",
       "MCP",
       "Function Calling"
-    ]
+    ],
+    "ipa_full": "/ˌæplɪˈkeɪʃn ˈprəʊɡræmɪŋ ˈɪntəfeɪs/"
   },
   {
     "abbr": "ONNX",
@@ -442,6 +473,7 @@
       "TensorRT-LLM",
       "Parameter",
       "GPU"
-    ]
+    ],
+    "ipa_full": "/ˈəʊpən ˈnjʊərəl ˈnetwɜːk ɪksˈtʃeɪndʒ/"
   }
 ]

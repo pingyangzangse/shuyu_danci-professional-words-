@@ -12,7 +12,8 @@
       "JIT",
       "BOM",
       "EOL"
-    ]
+    ],
+    "ipa_full": "/ˈɪntɪɡreɪtɪd səˈplaɪ tʃeɪn/"
   },
   {
     "abbr": "MRP",
@@ -26,7 +27,8 @@
       "L/T",
       "MOQ",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/məˈtɪəriəl rɪˈkwaɪəmənts ˈplænɪŋ/"
   },
   {
     "abbr": "MRP II",
@@ -39,7 +41,8 @@
       "Bottleneck",
       "OEE",
       "Cycle Time"
-    ]
+    ],
+    "ipa_full": "/ˌmænjʊˈfæktʃərɪŋ rɪˈsɔːs ˈplænɪŋ/"
   },
   {
     "abbr": "ERP",
@@ -54,7 +57,8 @@
       "SRM",
       "BOM",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˈentəpraɪz rɪˈsɔːs ˈplænɪŋ/"
   },
   {
     "abbr": "MES",
@@ -69,7 +73,8 @@
       "Andon",
       "Cycle Time",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˌmænjʊˈfæktʃərɪŋ ˌeksɪˈkjuːʃən ˈsɪstəm/"
   },
   {
     "abbr": "PLM",
@@ -84,7 +89,8 @@
       "MBOM",
       "ECN",
       "NPI"
-    ]
+    ],
+    "ipa_full": "/ˈprɒdʌkt ˈlaɪfˌsaɪkəl ˈmænɪdʒmənt/"
   },
   {
     "abbr": "WMS",
@@ -98,7 +104,8 @@
       "Safety Stock",
       "Kanban",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˈweəhaʊs ˈmænɪdʒmənt ˈsɪstəm/"
   },
   {
     "abbr": "TMS",
@@ -111,7 +118,8 @@
       "JIT",
       "VMI",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˌtrænspɔːˈteɪʃən ˈmænɪdʒmənt ˈsɪstəm/"
   },
   {
     "abbr": "APS",
@@ -126,7 +134,8 @@
       "Cycle Time",
       "Takt Time",
       "OEE"
-    ]
+    ],
+    "ipa_full": "/ədˈvɑːnst ˈplænɪŋ ənd ˈskedʒuːlɪŋ/"
   },
   {
     "abbr": "SRM",
@@ -141,7 +150,8 @@
       "SCAR",
       "ISC",
       "L/T"
-    ]
+    ],
+    "ipa_full": "/səˈplaɪə rɪˈleɪʃənʃɪp ˈmænɪdʒmənt/"
   },
   {
     "abbr": "JIT",
@@ -156,7 +166,8 @@
       "L/T",
       "VMI",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˌdʒʌst ɪn ˈtaɪm/"
   },
   {
     "abbr": "Lean",
@@ -171,7 +182,8 @@
       "WIP",
       "Bottleneck",
       "Andon"
-    ]
+    ],
+    "ipa_full": "/liːn/"
   },
   {
     "abbr": "TPS",
@@ -185,7 +197,8 @@
       "Poka-Yoke",
       "Kaizen",
       "5S"
-    ]
+    ],
+    "ipa_full": "/tɔɪˈəʊtə prəˈdʌkʃən ˈsɪstəm/"
   },
   {
     "abbr": "TQM",
@@ -200,7 +213,8 @@
       "COPQ",
       "Lean",
       "TR"
-    ]
+    ],
+    "ipa_full": "/ˌtəʊtəl ˈkwɒləti ˈmænɪdʒmənt/"
   },
   {
     "abbr": "TPM",
@@ -214,7 +228,8 @@
       "Bottleneck",
       "JIT",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˌtəʊtəl prəˈdʌktɪv ˈmeɪntənəns/"
   },
   {
     "abbr": "OEE",
@@ -228,7 +243,8 @@
       "MES",
       "FPY",
       "TOC"
-    ]
+    ],
+    "ipa_full": "/ˌəʊvərˈɔːl ɪˈkwɪpmənt ɪˈfektɪvnəs/"
   },
   {
     "abbr": "Kanban",
@@ -242,7 +258,8 @@
       "Andon",
       "Safety Stock",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˈkænbæn/"
   },
   {
     "abbr": "VMI",
@@ -256,7 +273,8 @@
       "L/T",
       "Kanban",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˈvendə ˈmænɪdʒd ˈɪnvəntri/"
   },
   {
     "abbr": "EOL",
@@ -271,7 +289,8 @@
       "EOP",
       "PCN",
       "GA"
-    ]
+    ],
+    "ipa_full": "/ˌend əv ˈlaɪf/"
   },
   {
     "abbr": "L/T",
@@ -285,7 +304,8 @@
       "Cycle Time",
       "VMI",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˈliːd taɪm/"
   },
   {
     "abbr": "MOQ",
@@ -299,7 +319,8 @@
       "SRM",
       "WIP",
       "NPI"
-    ]
+    ],
+    "ipa_full": "/ˈmɪnɪməm ˈɔːdə ˈkwɒntəti/"
   },
   {
     "abbr": "MPQ",
@@ -313,7 +334,8 @@
       "L/T",
       "EOL",
       "Safety Stock"
-    ]
+    ],
+    "ipa_full": "/ˈmɪnɪməm ˈpækɪdʒ ˈkwɒntəti/"
   },
   {
     "abbr": "Safety Stock",
@@ -328,7 +350,8 @@
       "VMI",
       "Kanban",
       "ISC"
-    ]
+    ],
+    "ipa_full": "/ˈseɪfti stɒk/"
   },
   {
     "abbr": "Cycle Time",
@@ -343,7 +366,8 @@
       "APS",
       "TOC",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˈsaɪkəl taɪm/"
   },
   {
     "abbr": "Takt Time",
@@ -357,7 +381,8 @@
       "OEE",
       "Kanban",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˈtækt taɪm/"
   },
   {
     "abbr": "Andon",
@@ -371,7 +396,8 @@
       "5S",
       "Kaizen",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˈændɒn/"
   },
   {
     "abbr": "Poka-Yoke",
@@ -386,7 +412,8 @@
       "Lean",
       "Kaizen",
       "IQC"
-    ]
+    ],
+    "ipa_full": "/ˌpəʊkə ˈjəʊkeɪ/"
   },
   {
     "abbr": "5S",
@@ -400,7 +427,8 @@
       "Andon",
       "EHS",
       "Poka-Yoke"
-    ]
+    ],
+    "ipa_full": "/sɔːt set ɪn ˈɔːdə ʃaɪn ˈstændədaɪz səˈsteɪn/"
   },
   {
     "abbr": "Kaizen",
@@ -414,7 +442,8 @@
       "TQM",
       "Bottleneck",
       "Andon"
-    ]
+    ],
+    "ipa_full": "/kaɪˈzen/"
   },
   {
     "abbr": "Bottleneck",
@@ -428,7 +457,8 @@
       "Takt Time",
       "APS",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˈbɒtlnek/"
   },
   {
     "abbr": "TOC",
@@ -442,7 +472,8 @@
       "Cycle Time",
       "OEE",
       "APS"
-    ]
+    ],
+    "ipa_full": "/ˈθɪəri əv kənˈstreɪnts/"
   },
   {
     "abbr": "WIP",
@@ -457,7 +488,8 @@
       "Safety Stock",
       "TOC",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ˌwɜːk ɪn ˈprəʊses/"
   },
   {
     "abbr": "EHS",
@@ -472,6 +504,7 @@
       "ESD",
       "RoHS",
       "Lean"
-    ]
+    ],
+    "ipa_full": "/ɪnˈvaɪrənmənt helθ ənd ˈseɪfti/"
   }
 ]

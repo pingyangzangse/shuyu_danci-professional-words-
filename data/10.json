@@ -10,7 +10,8 @@
       "Token",
       "Inference",
       "Few-shot"
-    ]
+    ],
+    "ipa_full": "/prɒmpt/"
   },
   {
     "abbr": "Prompt Engineering",
@@ -24,7 +25,8 @@
       "Delimiters",
       "Meta-Prompt",
       "Fine-tuning"
-    ]
+    ],
+    "ipa_full": "/prɒmpt ˌendʒɪˈnɪərɪŋ/"
   },
   {
     "abbr": "System Prompt",
@@ -37,7 +39,8 @@
       "Alignment",
       "Refusal",
       "Prompt Injection"
-    ]
+    ],
+    "ipa_full": "/ˈsɪstəm prɒmpt/"
   },
   {
     "abbr": "Few-shot",
@@ -49,7 +52,8 @@
       "ICL",
       "Prompt",
       "Prompt Engineering"
-    ]
+    ],
+    "ipa_full": "/ˈfjuː ʃɒt ˈprɒmptɪŋ/"
   },
   {
     "abbr": "Zero-shot",
@@ -62,7 +66,8 @@
       "Instruction Following",
       "Prompt",
       "Chatbot"
-    ]
+    ],
+    "ipa_full": "/ˈzɪərəʊ ʃɒt ˈprɒmptɪŋ/"
   },
   {
     "abbr": "One-shot",
@@ -75,7 +80,8 @@
       "Context Length",
       "API",
       "Token"
-    ]
+    ],
+    "ipa_full": "/ˈwʌn ʃɒt ˈprɒmptɪŋ/"
   },
   {
     "abbr": "CoT",
@@ -87,7 +93,8 @@
       "Self-Consistency",
       "Zero-shot",
       "Hallucination"
-    ]
+    ],
+    "ipa_full": "/ˈtʃeɪn əv ˈθɔːt/"
   },
   {
     "abbr": "ToT",
@@ -99,7 +106,8 @@
       "ReAct",
       "Agent",
       "Workflow"
-    ]
+    ],
+    "ipa_full": "/ˈtriː əv ˈθɔːts/"
   },
   {
     "abbr": "ReAct",
@@ -112,7 +120,8 @@
       "CoT",
       "Orchestration",
       "Hallucination"
-    ]
+    ],
+    "ipa_full": "/ˈriːzənɪŋ ənd ˈæktɪŋ/"
   },
   {
     "abbr": "Self-Consistency",
@@ -124,7 +133,8 @@
       "Temperature",
       "Benchmark",
       "ToT"
-    ]
+    ],
+    "ipa_full": "/ˌself kənˈsɪstənsi/"
   },
   {
     "abbr": "Role Prompt",
@@ -136,7 +146,8 @@
       "Prompt Engineering",
       "Instruction Following",
       "Delimiters"
-    ]
+    ],
+    "ipa_full": "/ˈrəʊl ˈprɒmptɪŋ/"
   },
   {
     "abbr": "Jailbreak",
@@ -149,7 +160,8 @@
       "Alignment",
       "Refusal",
       "System Prompt"
-    ]
+    ],
+    "ipa_full": "/ˈdʒeɪlbreɪk/"
   },
   {
     "abbr": "Prompt Injection",
@@ -162,7 +174,8 @@
       "Agent",
       "System Prompt",
       "Delimiters"
-    ]
+    ],
+    "ipa_full": "/prɒmpt ɪnˈdʒekʃn/"
   },
   {
     "abbr": "Hallucination",
@@ -175,7 +188,8 @@
       "Evaluation",
       "LLM",
       "Guardrails"
-    ]
+    ],
+    "ipa_full": "/həˌluːsɪˈneɪʃn/"
   },
   {
     "abbr": "Alignment",
@@ -188,7 +202,8 @@
       "Constitutional AI",
       "Instruction Following",
       "Refusal"
-    ]
+    ],
+    "ipa_full": "/əˈlaɪnmənt/"
   },
   {
     "abbr": "Instruction Following",
@@ -201,7 +216,8 @@
       "Benchmark",
       "Zero-shot",
       "Agent"
-    ]
+    ],
+    "ipa_full": "/ɪnˈstrʌkʃn ˈfɒləʊɪŋ/"
   },
   {
     "abbr": "Red Teaming",
@@ -214,7 +230,8 @@
       "Evaluation",
       "Prompt Injection",
       "Refusal"
-    ]
+    ],
+    "ipa_full": "/ˌred ˈtiːmɪŋ/"
   },
   {
     "abbr": "Guardrails",
@@ -227,7 +244,8 @@
       "Prompt Injection",
       "System Prompt",
       "Deployment"
-    ]
+    ],
+    "ipa_full": "/ˈɡɑːdreɪlz/"
   },
   {
     "abbr": "Constitutional AI",
@@ -240,7 +258,8 @@
       "Post-training",
       "Red Teaming",
       "SFT"
-    ]
+    ],
+    "ipa_full": "/ˌkɒnstɪˈtjuːʃnəl ˌeɪ ˈaɪ/"
   },
   {
     "abbr": "Refusal",
@@ -252,7 +271,8 @@
       "Jailbreak",
       "System Prompt",
       "Constitutional AI"
-    ]
+    ],
+    "ipa_full": "/rɪˈfjuːzl/"
   },
   {
     "abbr": "ICL",
@@ -265,7 +285,8 @@
       "Pre-training",
       "Context Window",
       "Prompt"
-    ]
+    ],
+    "ipa_full": "/ˌɪn ˈkɒntekst ˈlɜːnɪŋ/"
   },
   {
     "abbr": "Meta-Prompt",
@@ -277,7 +298,8 @@
       "System Prompt",
       "Prompt Template",
       "ICL"
-    ]
+    ],
+    "ipa_full": "/ˈmetə prɒmpt/"
   },
   {
     "abbr": "Delimiters",
@@ -290,6 +312,7 @@
       "System Prompt",
       "RAG",
       "Token"
-    ]
+    ],
+    "ipa_full": "/dɪˈlɪmɪtəz/"
   }
 ]

@@ -17,7 +17,7 @@ for (const line of lines) {
   const m = line.match(/^\|(.+?)\|(.+?)\|(.+?)\|\s*$/);
   if (!m) continue;
   const abbr = m[1].trim(), full = m[2].trim(), meaning = m[3].trim();
-  if (abbr === "英文缩写" || abbr.startsWith("---")) continue;
+  if (abbr.startsWith("英文缩写") || abbr.startsWith("---")) continue;
   const key = abbr + "|" + full;
   if (seen.has(key)) continue;
   seen.add(key);

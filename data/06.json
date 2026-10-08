@@ -10,7 +10,8 @@
       "QC080000",
       "TL9000",
       "TQM"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ es ˈəʊ ˌnaɪn ˈθaʊzənd ənd wʌn/"
   },
   {
     "abbr": "IATF16949",
@@ -24,7 +25,8 @@
       "SPC",
       "MSA",
       "SQE"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ eɪ tiː ˈef ˌsɪksˈtiːn ˈθaʊzənd ˌnaɪn ˈhʌndrəd ənd ˌfɔːtiˈnaɪn/"
   },
   {
     "abbr": "ISO14001",
@@ -36,7 +38,8 @@
       "EHS",
       "RoHS",
       "WEEE"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ es ˈəʊ ˌfɔːˈtiːn ˈθaʊzənd ənd wʌn/"
   },
   {
     "abbr": "ISO45001",
@@ -47,7 +50,8 @@
       "ISO14001",
       "EHS",
       "Ramp-up"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ es ˈəʊ ˌfɔːti faɪv ˈθaʊzənd ənd wʌn/"
   },
   {
     "abbr": "QC080000",
@@ -61,7 +65,8 @@
       "SQE",
       "IQC",
       "AVL"
-    ]
+    ],
+    "ipa_full": "/ˌkjuː ˈsiː ˌeɪti ˈθaʊzənd/"
   },
   {
     "abbr": "TL9000",
@@ -72,7 +77,8 @@
       "Telcordia",
       "GR-63",
       "GR-487"
-    ]
+    ],
+    "ipa_full": "/ˌtiː ˈel ˌnaɪn ˈθaʊzənd/"
   },
   {
     "abbr": "IPC-A-610",
@@ -87,7 +93,8 @@
       "AOI",
       "FQC",
       "OQC"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ piː ˈsiː eɪ ˌsɪks ˈten/"
   },
   {
     "abbr": "J-STD-001",
@@ -100,7 +107,8 @@
       "DIP",
       "PCBA",
       "ESD"
-    ]
+    ],
+    "ipa_full": "/ˌdʒeɪ es tiː ˈdiː əʊ əʊ ˈwʌn/"
   },
   {
     "abbr": "IPC-6012",
@@ -112,7 +120,8 @@
       "SQE",
       "IQC",
       "PCBA"
-    ]
+    ],
+    "ipa_full": "/ˌaɪ piː ˈsiː ˌsɪks əʊ wʌn ˈtuː/"
   },
   {
     "abbr": "RoHS",
@@ -126,7 +135,8 @@
       "IQC",
       "SQE",
       "BOM"
-    ]
+    ],
+    "ipa_full": "/rɪˈstrɪkʃən əv ˈhæzədəs ˈsʌbstənsɪz/"
   },
   {
     "abbr": "REACH",
@@ -137,7 +147,8 @@
       "WEEE",
       "QC080000",
       "CE"
-    ]
+    ],
+    "ipa_full": "/ˌredʒɪˈstreɪʃən ɪˌvæljʊˈeɪʃən ˌɔːθəraɪˈzeɪʃən ənd rɪˈstrɪkʃən əv ˈkemɪkəlz/"
   },
   {
     "abbr": "CE",
@@ -152,7 +163,8 @@
       "ATEX",
       "DVT",
       "PVT"
-    ]
+    ],
+    "ipa_full": "/ˌjʊərəˈpiːən kənˈfɔːməti/"
   },
   {
     "abbr": "UL",
@@ -163,7 +175,8 @@
       "FCC",
       "CCC",
       "DVT"
-    ]
+    ],
+    "ipa_full": "/ˌʌndəˈraɪtəz ləˈbɒrətriz/"
   },
   {
     "abbr": "FCC",
@@ -176,7 +189,8 @@
       "CCC",
       "DVT",
       "PVT"
-    ]
+    ],
+    "ipa_full": "/ˈfedərəl kəˌmjuːnɪˈkeɪʃənz kəˈmɪʃən/"
   },
   {
     "abbr": "CCC",
@@ -187,7 +201,8 @@
       "UL",
       "FCC",
       "EMC"
-    ]
+    ],
+    "ipa_full": "/ˌtʃaɪnə kəmˈpʌlsəri ˌsɜːtɪfɪˈkeɪʃən/"
   },
   {
     "abbr": "GR-487",
@@ -198,7 +213,8 @@
       "GR-63",
       "TL9000",
       "DVT"
-    ]
+    ],
+    "ipa_full": "/ˌdʒiː ˈɑː ˌfɔː eɪt ˈsevən/"
   },
   {
     "abbr": "Telcordia",
@@ -209,7 +225,8 @@
       "GR-487",
       "TL9000",
       "MTBF"
-    ]
+    ],
+    "ipa_full": "/ˌtelˈkɔːdiə/"
   },
   {
     "abbr": "GR-63",
@@ -221,7 +238,8 @@
       "EMC",
       "ESD",
       "DVT"
-    ]
+    ],
+    "ipa_full": "/ˌdʒiː ˈɑː ˌsɪks ˈθriː/"
   },
   {
     "abbr": "IEC",
@@ -233,7 +251,8 @@
       "UL",
       "RoHS",
       "ATEX"
-    ]
+    ],
+    "ipa_full": "/ˌɪntəˈnæʃənəl ɪˌlektrəʊˈteknɪkəl kəˈmɪʃən/"
   },
   {
     "abbr": "EMC",
@@ -247,7 +266,8 @@
       "ESD",
       "GR-63",
       "DVT"
-    ]
+    ],
+    "ipa_full": "/ɪˌlektrəʊmæɡˈnetɪk kəmˌpætəˈbɪləti/"
   },
   {
     "abbr": "ESD",
@@ -260,7 +280,8 @@
       "DIP",
       "IQC",
       "PCBA"
-    ]
+    ],
+    "ipa_full": "/ɪˌlektrəʊˈstætɪk dɪsˈtʃɑːdʒ/"
   },
   {
     "abbr": "MSL",
@@ -272,7 +293,8 @@
       "IQC",
       "PCBA",
       "J-STD-001"
-    ]
+    ],
+    "ipa_full": "/ˈmɔɪstʃə ˌsensəˈtɪvəti ˈlevəl/"
   },
   {
     "abbr": "WEEE",
@@ -283,7 +305,8 @@
       "REACH",
       "ISO14001",
       "EOL"
-    ]
+    ],
+    "ipa_full": "/weɪst ɪˈlektrɪkəl ənd ˌelekˈtrɒnɪk ɪˈkwɪpmənt/"
   },
   {
     "abbr": "ATEX",
@@ -294,6 +317,7 @@
       "IEC",
       "EMC",
       "EHS"
-    ]
+    ],
+    "ipa_full": "/ˈætməsfɪəz ɪkˈspləʊsɪbəl/"
   }
 ]

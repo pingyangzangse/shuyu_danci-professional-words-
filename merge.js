@@ -17,6 +17,7 @@ for (const t of terms) {
   const e = extra[t.abbr];
   if (e) {
     t.ipa = e.ipa || "";
+    t.ipa_full = e.ipa_full || "";
     t.detail = e.detail || "";
     t.related = Array.isArray(e.related) ? e.related : [];
     if (t.detail) withDetail++;
