@@ -39,9 +39,25 @@
   .tab.active { background:#fff; color:var(--text); font-weight:600; box-shadow:0 2px 8px rgba(58,168,143,.15); }
 
   .controls { display:flex; gap:8px; padding:10px 0; flex-wrap:wrap; }
-  select, .toggle, .search { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px;
+  .toggle, .search { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px;
                     padding:8px 10px; font-size:13px; outline:none; }
-  select { flex:1; min-width:0; }
+  .dd { position:relative; flex:1; min-width:0; }
+  .dd-btn { width:100%; background:var(--card); border:1px solid var(--line); border-radius:10px;
+            padding:8px 12px; font-size:13px; color:var(--text); cursor:pointer;
+            display:flex; justify-content:space-between; align-items:center; gap:6px; }
+  .dd-btn .dd-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dd-btn svg { width:11px; height:11px; fill:var(--dim); flex-shrink:0; transition:transform .2s; }
+  .dd.open .dd-btn { border-color:var(--accent); }
+  .dd.open .dd-btn svg { transform:rotate(180deg); }
+  .dd-pop { position:absolute; top:calc(100% + 6px); left:0; right:0; background:#fff;
+            border:1px solid var(--line); border-radius:12px; box-shadow:0 10px 30px rgba(58,168,143,.16);
+            z-index:40; max-height:264px; overflow-y:auto; display:none; }
+  .dd.open .dd-pop { display:block; }
+  .dd-opt { padding:10px 13px; font-size:13px; cursor:pointer; color:var(--text); }
+  .dd-opt:first-child { border-radius:12px 12px 0 0; }
+  .dd-opt:last-child { border-radius:0 0 12px 12px; }
+  .dd-opt:hover { background:var(--accent-soft); }
+  .dd-opt.on { color:var(--accent); font-weight:600; }
   .search { width:100%; }
   .toggle { cursor:pointer; text-align:center; user-select:none; flex:1; }
   .toggle.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:600; }
@@ -180,13 +196,8 @@
 <!-- 闪卡视图 -->
 <div id="viewFlash" style="display:flex;flex-direction:column;flex:1;">
   <div class="controls">
-    <select id="domainSel">
-      <option value="">全部领域</option>
-      <option value="制造">制造</option>
-      <option value="AI">AI</option>
-      <option value="我的">我的词条</option>
-    </select>
-    <select id="catSel"><option value="">全部小类</option></select>
+    <div class="dd" id="domainDD"></div>
+    <div class="dd" id="catDD"></div>
     <div class="toggle" id="shuffleBtn">随机</div>
     <div class="toggle" id="unfamiliarBtn">只看不熟</div>
   </div>
@@ -226,12 +237,7 @@
 <div id="viewList" class="hidden" style="display:flex;flex-direction:column;flex:1;">
   <div class="controls">
     <input class="search" id="search" placeholder="搜索缩写 / 全称 / 中文释义">
-    <select id="listDomainSel">
-      <option value="">全部领域</option>
-      <option value="制造">制造</option>
-      <option value="AI">AI</option>
-      <option value="我的">我的词条</option>
-    </select>
+    <div class="dd" id="listDomainDD"></div>
     <div class="toggle" id="listKnownOnly">只看已掌握</div>
     <div class="toggle" id="listUnfOnly">只看不熟</div>
   </div>
@@ -492,13 +498,62 @@ function speak(text) {
 }
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
+/* ================= 自绘下拉组件 ================= */
+const CHEVRON = '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>';
+function makeDropdown(root, onChange) {
+  let options = [], value = "";
+  root.classList.add("dd");
+  root.innerHTML = '<button type="button" class="dd-btn"><span class="dd-label"></span>' + CHEVRON + '</button><div class="dd-pop"></div>';
+  const label = root.querySelector(".dd-label");
+  const pop = root.querySelector(".dd-pop");
+  function renderBtn() {
+    const cur = options.find(o => o.value === value);
+    label.textContent = cur ? cur.label : (options[0] ? options[0].label : "");
+  }
+  function renderPop() {
+    pop.innerHTML = options.map(o =>
+      '<div class="dd-opt' + (o.value === value ? " on" : "") + '" data-v="' + esc(o.value) + '">' + esc(o.label) + '</div>'
+    ).join("");
+  }
+  root.querySelector(".dd-btn").onclick = e => {
+    e.stopPropagation();
+    document.querySelectorAll(".dd.open").forEach(d => { if (d !== root) d.classList.remove("open"); });
+    root.classList.toggle("open");
+  };
+  pop.onclick = e => {
+    const v = e.target.dataset && e.target.dataset.v;
+    if (v === undefined) return;
+    value = v; root.classList.remove("open");
+    renderBtn(); renderPop();
+    onChange(value);
+  };
+  return {
+    get value() { return value; },
+    set value(v) { value = v; renderBtn(); renderPop(); },
+    setOptions(list) { options = list; if (!options.some(o => o.value === value)) value = options[0] ? options[0].value : ""; renderBtn(); renderPop(); },
+  };
+}
+document.addEventListener("click", () => document.querySelectorAll(".dd.open").forEach(d => d.classList.remove("open")));
+
+const DOMAIN_OPTS = [
+  { value: "", label: "全部领域" },
+  { value: "制造", label: "制造" },
+  { value: "AI", label: "AI" },
+  { value: "我的", label: "我的词条" },
+];
+const domainDD = makeDropdown($("domainDD"), () => { refreshCats(); buildDeck(); });
+const catDD = makeDropdown($("catDD"), () => buildDeck());
+const listDomainDD = makeDropdown($("listDomainDD"), () => renderList());
+domainDD.setOptions(DOMAIN_OPTS);
+listDomainDD.setOptions(DOMAIN_OPTS);
+
 /* ================= 闪卡 ================= */
 let shuffle = localStorage.getItem("fc_shuffle") === "1";
 let onlyUnfamiliar = localStorage.getItem("fc_onlyunf") === "1";
 let deck = [], idx = 0;
 
 function buildDeck() {
-  const d = $("domainSel").value, c = $("catSel").value;
+  const d = domainDD.value, c = catDD.value;
   const unf = store.unfamiliar;
   deck = TERMS.filter(t =>
     (!d || t.domain === d) && (!c || t.category === c) &&
@@ -560,7 +615,7 @@ function renderCard() {
 function jumpTo(t) {
   if (!t) return;
   if (onlyUnfamiliar) { onlyUnfamiliar = false; localStorage.setItem("fc_onlyunf", "0"); $("unfamiliarBtn").classList.remove("on"); }
-  $("domainSel").value = ""; refreshCats(); $("catSel").value = "";
+  domainDD.value = ""; refreshCats(); catDD.value = "";
   switchView("flash");
   buildDeck();
   const i = deck.findIndex(x => key(x) === key(t));
@@ -596,8 +651,6 @@ $("prev").onclick = () => { if (idx > 0) { idx--; renderCard(); } };
 $("next").onclick = () => { if (idx < deck.length - 1) { idx++; renderCard(); } };
 $("markKnown").onclick = () => mark("known");
 $("markUnfamiliar").onclick = () => mark("unfamiliar");
-$("domainSel").onchange = () => { refreshCats(); buildDeck(); };
-$("catSel").onchange = buildDeck;
 $("shuffleBtn").onclick = () => {
   shuffle = !shuffle; localStorage.setItem("fc_shuffle", shuffle ? "1" : "0");
   $("shuffleBtn").classList.toggle("on", shuffle); buildDeck();
@@ -608,15 +661,15 @@ $("unfamiliarBtn").onclick = () => {
 };
 
 function refreshCats() {
-  const d = $("domainSel").value;
+  const d = domainDD.value;
   const cats = [...new Set(TERMS.filter(t => !d || t.domain === d).map(t => t.category))];
-  $("catSel").innerHTML = '<option value="">全部小类</option>' + cats.map(c => '<option>' + esc(c) + '</option>').join("");
+  catDD.setOptions([{ value: "", label: "全部小类" }].concat(cats.map(c => ({ value: c, label: c }))));
 }
 
 /* ================= 词表 ================= */
 function renderList() {
   const q = $("search").value.trim().toLowerCase();
-  const d = $("listDomainSel").value;
+  const d = listDomainDD.value;
   const rows = TERMS.filter(t => {
     if (d && t.domain !== d) return false;
     const st = statusOf(t);
@@ -641,7 +694,6 @@ function renderList() {
     : '<div class="empty">没有匹配的术语</div>';
 }
 $("search").oninput = renderList;
-$("listDomainSel").onchange = renderList;
 $("listKnownOnly").onclick = () => { $("listKnownOnly").classList.toggle("on"); renderList(); };
 $("listUnfOnly").onclick = () => { $("listUnfOnly").classList.toggle("on"); renderList(); };
 $("list").onclick = async e => {
