@@ -19,26 +19,28 @@
     --text:#2e3a38; --dim:#8ba39d; --line:#e2ece8;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; }
   body { background:var(--bg); color:var(--text); font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
-         min-height:100vh; display:flex; flex-direction:column; max-width:520px; margin:0 auto; padding:0 16px; }
+         height:100dvh; overflow:hidden; display:flex; flex-direction:column; max-width:520px; margin:0 auto; padding:0 16px; }
 
-  header { padding:18px 0 6px; text-align:center; position:relative; }
-  h1 { font-size:20px; font-weight:600; letter-spacing:2px; }
+  header { padding:10px 0 4px; position:relative; }
+  .hdr-row { display:flex; align-items:center; justify-content:space-between; }
+  .app-icon { width:30px; height:30px; border-radius:8px; box-shadow:0 2px 6px rgba(58,168,143,.25); }
   .stats { font-size:12px; color:var(--dim); margin-top:6px; }
   .stats b { color:var(--accent); font-weight:600; }
   .progress { height:4px; background:var(--line); border-radius:2px; margin-top:10px; overflow:hidden; }
   .progress i { display:block; height:100%; background:var(--accent); border-radius:2px; transition:width .3s; }
-  .hdr-actions { position:absolute; top:18px; right:0; display:flex; gap:8px; }
+  .hdr-actions { display:flex; gap:8px; }
   .hdr-btn { font-size:12px; color:var(--accent); background:var(--accent-soft); border:1px solid transparent;
              border-radius:16px; padding:6px 12px; cursor:pointer; white-space:nowrap; }
   .hdr-btn:active { opacity:.7; }
 
-  .tabs { display:flex; background:var(--accent-soft); border-radius:12px; padding:4px; margin:10px 0 4px; }
+  .tabs { display:flex; background:var(--accent-soft); border-radius:12px; padding:4px; margin:6px 0 2px; }
   .tab { flex:1; text-align:center; padding:9px 0; font-size:14px; border-radius:9px; cursor:pointer;
          color:var(--accent); user-select:none; transition:all .2s; }
   .tab.active { background:#fff; color:var(--text); font-weight:600; box-shadow:0 2px 8px rgba(58,168,143,.15); }
 
-  .controls { display:flex; gap:8px; padding:10px 0; flex-wrap:wrap; }
+  .controls { display:flex; gap:8px; padding:8px 0; align-items:center; }
   .toggle, .search { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px;
                     padding:8px 10px; font-size:13px; outline:none; }
   .dd { position:relative; flex:1; min-width:0; }
@@ -62,8 +64,14 @@
   .toggle { cursor:pointer; text-align:center; user-select:none; flex:1; }
   .toggle.on { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:600; }
 
+  .icon-btn { width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:var(--card);
+              display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; padding:0; }
+  .icon-btn svg { width:18px; height:18px; fill:var(--dim); }
+  .icon-btn.on { border-color:var(--accent); background:var(--accent-soft); }
+  .icon-btn.on svg { fill:var(--accent); }
+  .controls .dd.only-dd { flex:1.2; }
   /* 闪卡 */
-  .card-wrap { flex:1; display:flex; align-items:stretch; justify-content:center; padding:6px 0; perspective:1000px; min-height:380px; }
+  .card-wrap { flex:1; display:flex; align-items:stretch; justify-content:center; padding:4px 0; perspective:1000px; min-height:0; }
   .card { width:100%; position:relative; cursor:pointer; transform-style:preserve-3d; transition:transform .45s; }
   .card.flipped { transform:rotateY(180deg); }
   .face { position:absolute; inset:0; background:var(--card); border:1px solid var(--line); border-radius:20px;
@@ -85,7 +93,7 @@
   .spk:active { transform:scale(.92); }
   .spk svg { width:16px; height:16px; fill:var(--accent); }
   .full { font-size:20px; font-weight:600; color:var(--text); line-height:1.4; word-break:break-word; text-align:center; }
-  .detail { flex:1; overflow-y:auto; margin-top:12px; font-size:14px; line-height:1.85; color:#4a5b56;
+  .detail { flex:1; min-height:0; overflow-y:auto; margin-top:12px; font-size:14px; line-height:1.85; color:#4a5b56;
             white-space:pre-wrap; width:100%; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; width:100%; padding-top:8px; border-top:1px dashed var(--line); }
   .chips-label { font-size:11px; color:var(--dim); width:100%; }
@@ -93,8 +101,8 @@
           padding:4px 11px; border-radius:14px; cursor:pointer; }
   .chip:active { opacity:.6; }
 
-  .buttons { display:grid; grid-template-columns:1fr 1.5fr 1.5fr 1fr; gap:8px; padding:10px 0 26px; }
-  .btn { border-radius:14px; padding:14px 0; font-size:15px; font-weight:600; cursor:pointer;
+  .buttons { display:grid; grid-template-columns:1fr 1.5fr 1.5fr 1fr; gap:8px; padding:8px 0 14px; }
+  .btn { border-radius:14px; padding:12px 0; font-size:15px; font-weight:600; cursor:pointer;
          background:var(--card); color:var(--text); border:1px solid var(--line); }
   .btn:active { opacity:.7; }
   .btn.good { background:var(--good); color:#fff; border-color:var(--good); }
@@ -103,7 +111,7 @@
   .btn:disabled { opacity:.45; cursor:default; }
 
   /* 词表 */
-  .list-wrap { flex:1; overflow-y:auto; padding-bottom:24px; }
+  .list-wrap { flex:1; min-height:0; overflow-y:auto; padding-bottom:24px; }
   .row { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 15px; margin-bottom:8px;
          display:flex; gap:12px; align-items:flex-start; cursor:pointer; }
   .row:active { background:var(--accent-soft); }
@@ -179,13 +187,15 @@
 </head>
 <body>
 <header>
-  <h1>术语闪卡</h1>
+  <div class="hdr-row">
+    <img class="app-icon" src="./icons/icon-192.png" alt="术语闪卡">
+    <div class="hdr-actions" style="position:static;">
+      <button class="hdr-btn" id="importBtn">+ 录入</button>
+      <button class="hdr-btn" id="authBtn">登录 / 同步</button>
+    </div>
+  </div>
   <div class="stats" id="stats"></div>
   <div class="progress"><i id="bar"></i></div>
-  <div class="hdr-actions">
-    <button class="hdr-btn" id="importBtn">+ 录入</button>
-    <button class="hdr-btn" id="authBtn">登录 / 同步</button>
-  </div>
 </header>
 
 <div class="tabs">
@@ -198,8 +208,8 @@
   <div class="controls">
     <div class="dd" id="domainDD"></div>
     <div class="dd" id="catDD"></div>
-    <div class="toggle" id="shuffleBtn">随机</div>
-    <div class="toggle" id="unfamiliarBtn">只看不熟</div>
+    <div class="dd only-dd" id="onlyDD"></div>
+    <button class="icon-btn" id="shuffleBtn" title="随机顺序"><svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
   </div>
   <div class="card-wrap">
     <div class="card" id="card">
@@ -238,8 +248,8 @@
   <div class="controls">
     <input class="search" id="search" placeholder="搜索缩写 / 全称 / 中文释义">
     <div class="dd" id="listDomainDD"></div>
-    <div class="toggle" id="listKnownOnly">只看已掌握</div>
-    <div class="toggle" id="listUnfOnly">只看不熟</div>
+    <div class="dd" id="listCatDD"></div>
+    <div class="dd only-dd" id="listOnlyDD"></div>
   </div>
   <div class="list-wrap" id="list"></div>
 </div>
@@ -539,25 +549,48 @@ const DOMAIN_OPTS = [
   { value: "", label: "全部领域" },
   { value: "制造", label: "制造" },
   { value: "AI", label: "AI" },
-  { value: "我的", label: "我的词条" },
+];
+const ONLY_OPTS = [
+  { value: "", label: "全部内容" },
+  { value: "unseen", label: "只看没看过的" },
+  { value: "unfamiliar", label: "只看不熟的" },
+  { value: "known", label: "只看已掌握的" },
+  { value: "mine", label: "只看我的词条" },
 ];
 const domainDD = makeDropdown($("domainDD"), () => { refreshCats(); buildDeck(); });
 const catDD = makeDropdown($("catDD"), () => buildDeck());
-const listDomainDD = makeDropdown($("listDomainDD"), () => renderList());
+const onlyDD = makeDropdown($("onlyDD"), () => buildDeck());
+const listDomainDD = makeDropdown($("listDomainDD"), () => { refreshListCats(); renderList(); });
+const listCatDD = makeDropdown($("listCatDD"), () => renderList());
+const listOnlyDD = makeDropdown($("listOnlyDD"), () => renderList());
 domainDD.setOptions(DOMAIN_OPTS);
 listDomainDD.setOptions(DOMAIN_OPTS);
+onlyDD.setOptions(ONLY_OPTS);
+listOnlyDD.setOptions(ONLY_OPTS);
+
+function matchOnly(t, mode) {
+  const st = statusOf(t);
+  if (mode === "unseen") return st === "";
+  if (mode === "unfamiliar") return st === "unfamiliar";
+  if (mode === "known") return st === "known";
+  if (mode === "mine") return !!t.custom;
+  return true;
+}
+function refreshListCats() {
+  const d = listDomainDD.value;
+  const cats = [...new Set(TERMS.filter(t => !d || t.domain === d).map(t => t.category))];
+  listCatDD.setOptions([{ value: "", label: "全部小类" }].concat(cats.map(c => ({ value: c, label: c }))));
+}
 
 /* ================= 闪卡 ================= */
 let shuffle = localStorage.getItem("fc_shuffle") === "1";
-let onlyUnfamiliar = localStorage.getItem("fc_onlyunf") === "1";
 let deck = [], idx = 0;
 
 function buildDeck() {
   const d = domainDD.value, c = catDD.value;
-  const unf = store.unfamiliar;
   deck = TERMS.filter(t =>
     (!d || t.domain === d) && (!c || t.category === c) &&
-    (!onlyUnfamiliar || unf.has(key(t))));
+    matchOnly(t, onlyDD.value));
   if (shuffle) {
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -614,7 +647,7 @@ function renderCard() {
 
 function jumpTo(t) {
   if (!t) return;
-  if (onlyUnfamiliar) { onlyUnfamiliar = false; localStorage.setItem("fc_onlyunf", "0"); $("unfamiliarBtn").classList.remove("on"); }
+  onlyDD.value = "";
   domainDD.value = ""; refreshCats(); catDD.value = "";
   switchView("flash");
   buildDeck();
@@ -632,7 +665,7 @@ function mark(which) {
   store.known = k; store.unfamiliar = u;
   pushProgressSoon();
   if (idx < deck.length - 1) idx++;
-  if (onlyUnfamiliar) buildDeck(); else renderCard();
+  renderCard();
 }
 
 $("card").onclick = () => $("card").classList.toggle("flipped");
@@ -654,10 +687,7 @@ $("markUnfamiliar").onclick = () => mark("unfamiliar");
 $("shuffleBtn").onclick = () => {
   shuffle = !shuffle; localStorage.setItem("fc_shuffle", shuffle ? "1" : "0");
   $("shuffleBtn").classList.toggle("on", shuffle); buildDeck();
-};
-$("unfamiliarBtn").onclick = () => {
-  onlyUnfamiliar = !onlyUnfamiliar; localStorage.setItem("fc_onlyunf", onlyUnfamiliar ? "1" : "0");
-  $("unfamiliarBtn").classList.toggle("on", onlyUnfamiliar); buildDeck();
+  $("shuffleBtn").title = shuffle ? "恢复顺序" : "随机顺序";
 };
 
 function refreshCats() {
@@ -670,11 +700,11 @@ function refreshCats() {
 function renderList() {
   const q = $("search").value.trim().toLowerCase();
   const d = listDomainDD.value;
+  const c = listCatDD.value;
   const rows = TERMS.filter(t => {
     if (d && t.domain !== d) return false;
-    const st = statusOf(t);
-    if ($("listKnownOnly").classList.contains("on") && st !== "known") return false;
-    if ($("listUnfOnly").classList.contains("on") && st !== "unfamiliar") return false;
+    if (c && t.category !== c) return false;
+    if (!matchOnly(t, listOnlyDD.value)) return false;
     if (q && !(t.abbr.toLowerCase().includes(q) || t.full.toLowerCase().includes(q) || t.meaning.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -694,8 +724,6 @@ function renderList() {
     : '<div class="empty">没有匹配的术语</div>';
 }
 $("search").oninput = renderList;
-$("listKnownOnly").onclick = () => { $("listKnownOnly").classList.toggle("on"); renderList(); };
-$("listUnfOnly").onclick = () => { $("listUnfOnly").classList.toggle("on"); renderList(); };
 $("list").onclick = async e => {
   const del = e.target.dataset && e.target.dataset.del;
   if (del) {
@@ -1108,9 +1136,9 @@ $("importConfirm").onclick = async () => {
 /* ================= 初始化 ================= */
 $("promptText").textContent = PROMPT_TEXT;
 $("shuffleBtn").classList.toggle("on", shuffle);
-$("unfamiliarBtn").classList.toggle("on", onlyUnfamiliar);
 applyCustomTerms(store.custom);
 refreshCats();
+refreshListCats();
 buildDeck();
 refreshAuthUI();
 if (isLoggedIn()) syncAfterLogin();
