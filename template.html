@@ -778,22 +778,62 @@ async function walletLogin(provider) {
   const address = accounts[0];
   if (!address) throw new Error("未获取到钱包地址");
   const ch = await api("/api/auth/wallet/challenge", { method: "POST", body: JSON.stringify({ address }) });
-  const signature = await provider.request({ method: "personal_sign", params: [ch.message, address] });
+  const hex = "0x" + Array.from(new TextEncoder().encode(ch.message)).map(b => b.toString(16).padStart(2, "0")).join("");
+  const signature = await provider.request({ method: "personal_sign", params: [hex, address] });
   const data = await api("/api/auth/wallet/verify", {
     method: "POST",
     body: JSON.stringify({ challenge_id: ch.challenge_id, address, signature }),
   });
   onLoginSuccess(data);
 }
+let wcProvider = null;
+async function walletLoginQR() {
+  $("walletErr").textContent = "";
+  if (!wcProvider) {
+    const mod = await import("https://esm.sh/@walletconnect/ethereum-provider@2.17.0?bundle");
+    wcProvider = await mod.EthereumProvider.init({
+      projectId: "54686c4d1e721a3a2e98256e662509a1",
+      chains: [1],
+      showQrModal: true,
+      metadata: { name: "术语闪卡", description: "术语闪卡钱包登录", url: location.origin, icons: [] },
+    });
+  }
+  await wcProvider.connect();
+  const address = wcProvider.accounts[0];
+  if (!address) throw new Error("未获取到钱包地址");
+  const ch = await api("/api/auth/wallet/challenge", { method: "POST", body: JSON.stringify({ address }) });
+  const hex = "0x" + Array.from(new TextEncoder().encode(ch.message)).map(b => b.toString(16).padStart(2, "0")).join("");
+  const signature = await wcProvider.request({ method: "personal_sign", params: [hex, address] });
+  const data = await api("/api/auth/wallet/verify", {
+    method: "POST",
+    body: JSON.stringify({ challenge_id: ch.challenge_id, address, signature }),
+  });
+  wcProvider.disconnect().catch(() => {});
+  onLoginSuccess(data);
+}
 async function initWalletPane() {
   const list = $("walletList");
   list.innerHTML = '<div class="sync-tip">正在检测钱包插件…</div>';
   const wallets = await discoverWallets();
+  list.innerHTML = "";
+  const qr = document.createElement("button");
+  qr.className = "btn primary";
+  qr.style.width = "100%"; qr.style.marginBottom = "8px";
+  qr.textContent = "手机钱包扫码登录";
+  qr.onclick = async () => {
+    qr.disabled = true; qr.textContent = "正在唤起二维码…";
+    try { await walletLoginQR(); }
+    catch (e) { $("walletErr").textContent = (e && (e.code === 4001 || /rejected|cancel/i.test(e.message || ""))) ? "你已取消" : (e.message || "扫码登录失败"); }
+    finally { qr.disabled = false; qr.textContent = "手机钱包扫码登录"; }
+  };
+  list.appendChild(qr);
   if (!wallets.length) {
-    list.innerHTML = '<div class="sync-tip">未检测到钱包插件。<br>请先安装 MetaMask 等浏览器钱包，或使用另外两种登录方式。</div>';
+    const tip = document.createElement("div");
+    tip.className = "sync-tip";
+    tip.innerHTML = "未检测到浏览器钱包插件，可扫码用手机钱包登录";
+    list.appendChild(tip);
     return;
   }
-  list.innerHTML = "";
   wallets.forEach(w => {
     const b = document.createElement("button");
     b.className = "btn primary";
