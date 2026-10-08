@@ -1,45 +1,47 @@
 # 术语闪卡 · 制造 & AI
 
-一个零依赖的单文件闪卡网页 App，专门用来记「缩写 ↔ 英文全称 + 中文释义」——
-因为背单词软件不支持词组，所以自己做了一个。
+一个零依赖单文件闪卡网页 App，专门记「缩写 ↔ 英文全称 + 中文详解」。
+线上地址：https://pingyangzangse.github.io/shuyu_danci-professional-words-/
 
 ## 功能
 
-- **翻卡记忆**：正面显示缩写（如 `DFM`），点击翻面看英文全称 + 中文释义
-- **标记系统**：每张卡可标记「✓ 已掌握」或「✗ 还不熟」，存在浏览器 localStorage，关掉重开不丢
-- **筛选**：按领域（制造 / AI）+ 小类（IPD 流程、DFX、微调、提示词等 11 个小类）筛选
-- **🔀 随机模式** / 顺序模式
-- **📌 只看不熟**：专注攻克薄弱项
-- 桌面端键盘快捷键：空格翻卡、← → 切换、1 不熟、2 掌握
+- **闪卡模式**：正面缩写 + 缩写音标（喇叭朗读缩写），点击翻面看全称 + 全称音标（喇叭朗读全称，英音 en-GB）+ 250~400 字详解（通俗类比 / 全局位置 / 解决痛点）+ 关联词条跳转
+- **全部词表**：搜索、领域筛选、只看已掌握/不熟；点击任意词条直达详解卡片
+- **标记系统**：已掌握 / 还不熟，进度自动保存
+- **账号登录**（与 DeepTalk 共用账号体系，账号互通）：
+  - 邮箱 + 密码登录 / 注册
+  - 邮箱验证码登录
+  - 数字钱包签名登录（MetaMask 等浏览器插件，未注册自动建号）
+  - 登录后进度与自定义词条云端同步，多设备一致；游客模式数据在本机，登录后自动合并上云
+- **生词录入**：
+  - 添加单个词：表单手动填写（缩写/全称/释义必填，详解/音标选填）
+  - 批量导入：复制内置提示词 → 粘贴给任意 AI（DeepSeek/Kimi/豆包，可只说一个领域让它自动扩词 20~50 个）→ 把返回的 JSON 粘贴回来 → 勾选确认入库
+- 内置词库 351 条（制造 163 + AI 175，华为 IPD 价值链 + AI 全栈），全部配双音标与详解
 
-词库：制造 163 条（华为 IPD 价值链全流程）+ AI 175 条，共 338 条。
+## 架构
 
-## 使用
-
-### 本地直接用
-双击打开 `index.html` 即可（单文件，数据已内嵌，无需联网）。
-
-### 部署到 GitHub Pages（手机随时刷）
-1. 在 GitHub 新建一个公开仓库，比如 `term-flashcards`
-2. 把 `index.html` 上传进去（网页上 Add file → Upload files 即可）
-3. 仓库 Settings → Pages → Source 选 `main` 分支根目录，保存
-4. 等一分钟，访问 `https://<你的用户名>.github.io/term-flashcards/`
-5. 手机浏览器打开后：iOS Safari 点分享 →「添加到主屏幕」；安卓 Chrome 菜单 →「添加到主屏幕」，就像一个真 App
-
-## 更新词库
-
-词库来自 `../术语总表.md`。修改术语后重新生成：
-
-```bash
-node build.js   # 解析 ../术语总表.md，重新生成 index.html
+```
+GitHub Pages（静态单文件 index.html）
+   │  https://knowledge-share.alaric.wiki/api（CORS 已放开）
+   ▼
+DeepTalk knowledge-share 后端（Express）
+   ├─ 复用：auth 登录注册 / 验证码 / 钱包 SIWE / ks_users / ks_tokens
+   └─ 新增：src/routes/flashcards.js（ks_flash_terms / ks_flash_progress 两表）
 ```
 
-（没有 Node 的话，index.html 里 `const TERMS = [...]` 就是全部数据，直接改也行。）
+## 更新内置词库
+
+改 `../术语总表.md` 后重新生成（本机无 Node 时用 DSH 会话跑）：
+
+```bash
+node build.js   # 术语总表.md → index.html（仅内置词条；详解/音标在 data/*.json，由 merge.js 合并）
+```
 
 ## 文件
 
 | 文件 | 说明 |
 |---|---|
-| `index.html` | 最终 App（单文件，数据内嵌） |
-| `template.html` | 界面模板（改样式/交互改这里） |
-| `build.js` | 构建脚本：术语总表.md → index.html |
+| index.html | 最终 App（单文件，数据内嵌） |
+| template.html | 界面模板 |
+| build.js / merge.js | 构建脚本 |
+| data/*.json | 各小类详解 + 双音标数据 |
